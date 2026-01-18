@@ -1,5 +1,13 @@
 const Index = () => {
-  return <div className="min-h-screen bg-background" />;
+  return (
+    <main className="min-h-screen bg-background">
+      <iframe
+        title="Website"
+        src="/index.html"
+        className="h-screen w-full border-0"
+      />
+    </main>
+  );
 };
 
 export default Index;
