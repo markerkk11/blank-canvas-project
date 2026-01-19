@@ -1,34 +1,18 @@
 const fs = require('fs');
 const path = require('path');
 
-const rootDir = path.join(__dirname, '..', 'public');
+// This script runs AFTER restructure-paths.cjs
+// It applies additional fixes to HTML files in public/laxapellets_se/
+
+const rootDir = path.join(__dirname, '..', 'public', 'laxapellets_se');
+const assetsDir = path.join(__dirname, '..', 'public', 'assets', 'laxapellets_se');
 
 // Replacements to apply to all HTML files
 const regexReplacements = [
   {
     // Redirect logo link to main index page
     pattern: /<a href="https:\/\/laxapellets\.se">/g,
-    replace: '<a href="/">'
-  },
-  {
-    // Redirect Ströprodukter links to vara-produkter (navigation menus)
-    pattern: /href="[^"]*stroprodukter\/\.html"/g,
-    replace: 'href="/laxapellets_se/vara-produkter/.html"'
-  },
-  {
-    // Redirect Värmepellets links to vara-produkter (navigation menus)
-    pattern: /href="[^"]*varmepellets\/\.html"/g,
-    replace: 'href="/laxapellets_se/vara-produkter/.html"'
-  },
-  {
-    // Redirect breadcrumb Ströprodukter links to vara-produkter
-    pattern: /href="\/stroprodukter"/g,
-    replace: 'href="/laxapellets_se/vara-produkter/.html"'
-  },
-  {
-    // Redirect breadcrumb Värmepellets links to vara-produkter
-    pattern: /href="\/varmepellets"/g,
-    replace: 'href="/laxapellets_se/vara-produkter/.html"'
+    replace: '<a href="/laxapellets_se/index.html">'
   },
   {
     // Remove mobile "Skapa konto" navigation
@@ -36,7 +20,7 @@ const regexReplacements = [
     replace: ''
   },
   {
-    // Replace login_to_buy div with lead modal button (same style as buy-request-container)
+    // Replace login_to_buy div with lead modal button
     pattern: /<div id="login_to_buy">[\s\S]*?<\/div>\s*<\/div>/g,
     replace: `<div class="buy-request-container" style="margin-top: 20px;">
 						<button type="button" class="button button-primary" onclick="if(window.openLeadModal) window.openLeadModal();" style="width: 100%; padding: 15px 30px; font-size: 18px; font-weight: bold; background-color: #1d525c; color: white; border: none; border-radius: 5px; cursor: pointer;">
@@ -47,6 +31,8 @@ const regexReplacements = [
 ];
 
 function findHtmlFiles(dir, files = []) {
+  if (!fs.existsSync(dir)) return files;
+  
   const items = fs.readdirSync(dir);
   
   for (const item of items) {
@@ -63,17 +49,17 @@ function findHtmlFiles(dir, files = []) {
   return files;
 }
 
-function getRelativePath(filePath) {
-  // Calculate relative path from the HTML file to the css/js folders
-  const relativePath = path.relative(path.dirname(filePath), path.join(rootDir, 'assets', 'laxapellets_se'));
-  return relativePath.replace(/\\/g, '/'); // Convert Windows paths
+function getRelativePathToAssets(filePath) {
+  const fileDir = path.dirname(filePath);
+  const relativePath = path.relative(fileDir, assetsDir);
+  return relativePath.replace(/\\/g, '/');
 }
 
 function fixFile(filePath) {
   let content = fs.readFileSync(filePath, 'utf8');
   let modified = false;
   
-  // Regex replacements
+  // Apply regex replacements
   for (const { pattern, replace } of regexReplacements) {
     const newContent = content.replace(pattern, replace);
     if (newContent !== content) {
@@ -84,7 +70,7 @@ function fixFile(filePath) {
   
   // Inject lead-modal.css before </head> if not already present
   if (!content.includes('lead-modal.css') && content.includes('</head>')) {
-    const basePath = getRelativePath(filePath);
+    const basePath = getRelativePathToAssets(filePath);
     const cssLink = `<link rel="stylesheet" href="${basePath}/css/lead-modal.css" />\n</head>`;
     content = content.replace('</head>', cssLink);
     modified = true;
@@ -92,7 +78,7 @@ function fixFile(filePath) {
   
   // Inject lead-modal.js before </body> if not already present
   if (!content.includes('lead-modal.js') && content.includes('</body>')) {
-    const basePath = getRelativePath(filePath);
+    const basePath = getRelativePathToAssets(filePath);
     const jsScript = `<script src="${basePath}/js/lead-modal.js"></script>\n</body>`;
     content = content.replace('</body>', jsScript);
     modified = true;
@@ -107,7 +93,14 @@ function fixFile(filePath) {
   return false;
 }
 
-console.log('Scanning for HTML files...\n');
+// Check if the new structure exists
+if (!fs.existsSync(rootDir)) {
+  console.log('Error: public/laxapellets_se/ does not exist.');
+  console.log('Please run "node scripts/restructure-paths.cjs" first.');
+  process.exit(1);
+}
+
+console.log('Scanning for HTML files in public/laxapellets_se/...\n');
 
 const htmlFiles = findHtmlFiles(rootDir);
 let fixedCount = 0;
@@ -118,4 +111,4 @@ for (const file of htmlFiles) {
   }
 }
 
-console.log(`\nDone! Fixed ${fixedCount} of ${htmlFiles.length} HTML files.`);
+console.log(`\n✓ Fixed ${fixedCount} of ${htmlFiles.length} HTML files.`);
