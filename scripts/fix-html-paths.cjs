@@ -37,6 +37,11 @@ const regexReplacements = [
     // Remove shipping-check element
     pattern: /<div class="prod_util prod_util--boxed shipping-check">[\s\S]*?<div id="closest_resellers"><\/div>\s*<\/div>\s*<\/div>/g,
     replace: ''
+  },
+  {
+    // Remove login link
+    pattern: /<a[^>]*class="login_item"[^>]*>[\s\S]*?<\/a>/g,
+    replace: ''
   }
 ];
 
