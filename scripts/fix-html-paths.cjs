@@ -11,13 +11,23 @@ const regexReplacements = [
     replace: '<a href="/">'
   },
   {
-    // Redirect Ströprodukter links to vara-produkter
+    // Redirect Ströprodukter links to vara-produkter (navigation menus)
     pattern: /href="[^"]*stroprodukter\/\.html"/g,
     replace: 'href="/laxapellets_se/vara-produkter/.html"'
   },
   {
-    // Redirect Värmepellets links to vara-produkter
+    // Redirect Värmepellets links to vara-produkter (navigation menus)
     pattern: /href="[^"]*varmepellets\/\.html"/g,
+    replace: 'href="/laxapellets_se/vara-produkter/.html"'
+  },
+  {
+    // Redirect breadcrumb Ströprodukter links to vara-produkter
+    pattern: /href="\/stroprodukter"/g,
+    replace: 'href="/laxapellets_se/vara-produkter/.html"'
+  },
+  {
+    // Redirect breadcrumb Värmepellets links to vara-produkter
+    pattern: /href="\/varmepellets"/g,
     replace: 'href="/laxapellets_se/vara-produkter/.html"'
   },
   {
