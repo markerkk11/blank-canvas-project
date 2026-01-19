@@ -345,6 +345,25 @@
   color: #666;
 }
 
+.lead-success-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.lead-success-buttons .lead-submit-btn {
+  width: auto;
+  padding: 14px 28px;
+}
+
+.lead-new-order-btn {
+  background: linear-gradient(135deg, #1d525c, #2a6b77);
+}
+
+.lead-close-btn {
+  background: linear-gradient(135deg, #666, #888);
+}
+
 /* Lead Buy Button Section - replaces login form */
 .lead-buy-section {
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
