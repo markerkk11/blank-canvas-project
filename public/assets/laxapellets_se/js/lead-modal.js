@@ -9,7 +9,7 @@
     { id: 'stropellets-bulk-8mm', name: 'Ströpellets bulk 8mm', price: 'Kontakta oss' },
     { id: 'stropellets', name: 'Ströpellets', price: '2 198.00 kr/pall' },
     { id: 'varmepellets-6mm', name: 'Värmepellets 6mm', price: '4 198.00 kr/pall' },
-    { id: 'varmepellets-8mm-bulk', name: 'Värmepellets 8mm Bulk', price: 'Kontakta oss' },
+    { id: 'varmepellets-8mm-bulk', name: 'Värmepellets 8mm Bulk', price: '4 548.00 kr/ton' },
     { id: 'varmepellets-8mm', name: 'Värmepellets 8mm', price: '4 198.00 kr/pall' }
   ];
 
