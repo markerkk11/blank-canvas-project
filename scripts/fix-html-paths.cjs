@@ -14,6 +14,22 @@ const replacements = [
   }
 ];
 
+// Regex replacement for .webp.html -> .webp (fixes broken image references)
+const regexReplacements = [
+  {
+    pattern: /\.webp\.html/g,
+    replace: '.webp'
+  },
+  {
+    pattern: /\.jpg\.html/g,
+    replace: '.jpg'
+  },
+  {
+    pattern: /\.png\.html/g,
+    replace: '.png'
+  }
+];
+
 function findHtmlFiles(dir, files = []) {
   const items = fs.readdirSync(dir);
   
@@ -35,9 +51,18 @@ function fixFile(filePath) {
   let content = fs.readFileSync(filePath, 'utf8');
   let modified = false;
   
+  // String replacements
   for (const { find, replace } of replacements) {
     if (content.includes(find)) {
       content = content.split(find).join(replace);
+      modified = true;
+    }
+  }
+  
+  // Regex replacements for broken image extensions
+  for (const { pattern, replace } of regexReplacements) {
+    if (pattern.test(content)) {
+      content = content.replace(pattern, replace);
       modified = true;
     }
   }
