@@ -222,7 +222,10 @@
           </svg>
           <h3>Tack för din förfrågan!</h3>
           <p>Vi återkommer till dig så snart som möjligt med en offert.</p>
-          <button type="button" class="lead-submit-btn" onclick="closeLeadModal()">Stäng</button>
+          <div class="lead-success-buttons">
+            <button type="button" class="lead-submit-btn lead-new-order-btn" onclick="window.startNewOrder()">Ny beställning</button>
+            <button type="button" class="lead-submit-btn lead-close-btn" onclick="closeLeadModal()">Stäng</button>
+          </div>
         </div>
       `;
     });
@@ -248,9 +251,22 @@
     }
   }
   
+  // Start new order - reset form and reopen
+  function startNewOrder() {
+    const overlay = document.getElementById('lead-modal-overlay');
+    if (overlay) {
+      overlay.remove();
+    }
+    createModal();
+    const newOverlay = document.getElementById('lead-modal-overlay');
+    newOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  
   // Expose functions globally
   window.openLeadModal = openModal;
   window.closeLeadModal = closeModal;
+  window.startNewOrder = startNewOrder;
   
   // Initialize - attach click handlers to buy request buttons
   document.addEventListener('DOMContentLoaded', function() {
