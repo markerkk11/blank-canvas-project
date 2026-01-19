@@ -20,6 +20,11 @@ const regexReplacements = [
     replace: ''
   },
   {
+    // Remove breadcrumbs div
+    pattern: /<div id="breadcrumbs">[\s\S]*?<\/div>\s*<\/div>/g,
+    replace: ''
+  },
+  {
     // Replace login_to_buy div with lead modal button
     pattern: /<div id="login_to_buy">[\s\S]*?<\/div>\s*<\/div>/g,
     replace: `<div class="buy-request-container" style="margin-top: 20px;">
