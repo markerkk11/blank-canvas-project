@@ -38,6 +38,12 @@ function findHtmlFiles(dir, files = []) {
   return files;
 }
 
+function getRelativePath(filePath) {
+  // Calculate relative path from the HTML file to the css/js folders
+  const relativePath = path.relative(path.dirname(filePath), path.join(rootDir, 'assets', 'laxapellets_se'));
+  return relativePath.replace(/\\/g, '/'); // Convert Windows paths
+}
+
 function fixFile(filePath) {
   let content = fs.readFileSync(filePath, 'utf8');
   let modified = false;
@@ -49,6 +55,22 @@ function fixFile(filePath) {
       content = newContent;
       modified = true;
     }
+  }
+  
+  // Inject lead-modal.css before </head> if not already present
+  if (!content.includes('lead-modal.css') && content.includes('</head>')) {
+    const basePath = getRelativePath(filePath);
+    const cssLink = `<link rel="stylesheet" href="${basePath}/css/lead-modal.css" />\n</head>`;
+    content = content.replace('</head>', cssLink);
+    modified = true;
+  }
+  
+  // Inject lead-modal.js before </body> if not already present
+  if (!content.includes('lead-modal.js') && content.includes('</body>')) {
+    const basePath = getRelativePath(filePath);
+    const jsScript = `<script src="${basePath}/js/lead-modal.js"></script>\n</body>`;
+    content = content.replace('</body>', jsScript);
+    modified = true;
   }
   
   if (modified) {
