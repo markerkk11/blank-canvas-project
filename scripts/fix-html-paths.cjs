@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const rootDir = path.join(__dirname, '..', 'public', 'assets');
+const rootDir = path.join(__dirname, '..', 'public');
 
 const replacements = [
   {
