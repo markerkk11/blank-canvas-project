@@ -23,44 +23,9 @@
     return null;
   }
 
-  // Generate quantity options based on unit
-  function getQuantityOptions(product) {
-    if (product.unit === 'ton') {
-      return [
-        { value: '1', label: '1 ton' },
-        { value: '2', label: '2 ton' },
-        { value: '3', label: '3 ton' },
-        { value: '4', label: '4 ton' },
-        { value: '5', label: '5 ton' },
-        { value: '6', label: '6 ton' },
-        { value: '7', label: '7 ton' },
-        { value: '8', label: '8 ton' },
-        { value: '9', label: '9 ton' },
-        { value: '10', label: '10+ ton' }
-      ];
-    } else if (product.unit === 'säck') {
-      return [
-        { value: '1', label: '1 säck' },
-        { value: '2', label: '2 säckar' },
-        { value: '3', label: '3 säckar' },
-        { value: '4', label: '4 säckar' },
-        { value: '5', label: '5+ säckar' }
-      ];
-    } else {
-      // Default: pall
-      return [
-        { value: '1', label: '1 pall' },
-        { value: '2', label: '2 pallar' },
-        { value: '3', label: '3 pallar' },
-        { value: '4', label: '4 pallar' },
-        { value: '5', label: '5 pallar' },
-        { value: '6', label: '6 pallar' },
-        { value: '7', label: '7 pallar' },
-        { value: '8', label: '8 pallar' },
-        { value: '9', label: '9 pallar' },
-        { value: '10', label: '10+ pallar' }
-      ];
-    }
+  // Get unit label for quantity input
+  function getUnitLabel(product) {
+    return product.unit;
   }
 
   // Calculate total price
@@ -73,13 +38,8 @@
       if (checkbox && checkbox.checked) {
         const productId = checkbox.value;
         const product = products.find(p => p.id === productId);
-        const quantitySelect = item.querySelector('.lead-quantity-select');
-        let quantity = parseInt(quantitySelect.value) || 1;
-        
-        // For 10+ options, use 10 as minimum
-        if (quantitySelect.value.includes('+')) {
-          quantity = 10;
-        }
+        const quantityInput = item.querySelector('.lead-quantity-input');
+        let quantity = parseInt(quantityInput.value) || 1;
         
         if (product && product.numericPrice) {
           total += product.numericPrice * quantity;
@@ -132,7 +92,6 @@
               <div class="lead-products-list" id="lead-products-list">
                 ${products.map(p => {
                   const isSelected = currentProduct && currentProduct.id === p.id;
-                  const options = getQuantityOptions(p);
                   return `
                   <div class="lead-product-item ${isSelected ? 'selected' : ''}" data-product-id="${p.id}">
                     <label class="lead-product-checkbox">
@@ -143,9 +102,10 @@
                       </span>
                     </label>
                     <div class="lead-product-quantity ${isSelected ? 'visible' : ''}">
-                      <select name="quantity-${p.id}" class="lead-quantity-select">
-                        ${options.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('')}
-                      </select>
+                      <div class="lead-quantity-wrapper">
+                        <input type="number" name="quantity-${p.id}" class="lead-quantity-input" value="1" min="1" max="999">
+                        <span class="lead-unit-label">${p.unit}</span>
+                      </div>
                     </div>
                   </div>
                 `}).join('')}
@@ -197,7 +157,7 @@
     productItems.forEach(item => {
       const checkbox = item.querySelector('input[type="checkbox"]');
       const quantityDiv = item.querySelector('.lead-product-quantity');
-      const quantitySelect = item.querySelector('.lead-quantity-select');
+      const quantityInput = item.querySelector('.lead-quantity-input');
       
       checkbox.addEventListener('change', function() {
         item.classList.toggle('selected', this.checked);
@@ -205,7 +165,7 @@
         calculateTotal();
       });
       
-      quantitySelect.addEventListener('change', calculateTotal);
+      quantityInput.addEventListener('input', calculateTotal);
     });
     
     // Calculate initial total if product is pre-selected
