@@ -64,10 +64,11 @@ function fixFile(filePath) {
     }
   }
   
-  // Regex replacements for broken image extensions
+  // Regex replacements for broken image extensions and cart removal
   for (const { pattern, replace } of regexReplacements) {
-    if (pattern.test(content)) {
-      content = content.replace(pattern, replace);
+    const newContent = content.replace(pattern, replace);
+    if (newContent !== content) {
+      content = newContent;
       modified = true;
     }
   }
