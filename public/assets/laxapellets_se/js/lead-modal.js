@@ -27,12 +27,16 @@
   function getQuantityOptions(product) {
     if (product.unit === 'ton') {
       return [
+        { value: '1', label: '1 ton' },
+        { value: '2', label: '2 ton' },
+        { value: '3', label: '3 ton' },
+        { value: '4', label: '4 ton' },
         { value: '5', label: '5 ton' },
-        { value: '10', label: '10 ton' },
-        { value: '15', label: '15 ton' },
-        { value: '20', label: '20 ton' },
-        { value: '25', label: '25 ton' },
-        { value: '30', label: '30+ ton' }
+        { value: '6', label: '6 ton' },
+        { value: '7', label: '7 ton' },
+        { value: '8', label: '8 ton' },
+        { value: '9', label: '9 ton' },
+        { value: '10', label: '10+ ton' }
       ];
     } else if (product.unit === 'säck') {
       return [
