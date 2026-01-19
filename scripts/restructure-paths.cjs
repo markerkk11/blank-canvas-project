@@ -62,77 +62,115 @@ function ensureDir(dirPath) {
 
 function updateAssetPaths(content, targetPath) {
   let updated = content;
-  
+
   // For absolute paths, use /assets/laxapellets_se/
   const absAssets = '/assets/laxapellets_se/';
-  
-  // Replace various relative path patterns to assets
-  // Handle: ../../wp-content, ../wp-content, ./wp-content, wp-content (at start)
+
+  // Asset folders to fix
   const assetFolders = ['wp-content', 'wp-includes', 'wp-admin', 'css', 'js', 'assets', 'wp-json'];
-  
-  for (const folder of assetFolders) {
-    // Match patterns like href="../../wp-content/ or src='../wp-content/
+  const externalDirs = ['connect_facebook_net', 'www_google-analytics_com', 'www_googletagmanager_com'];
+  const allAssetDirs = [...assetFolders, ...externalDirs];
+
+  for (const folder of allAssetDirs) {
+    // href/src/content="../../folder/..." => /assets/laxapellets_se/folder/...
     const relativePattern = new RegExp(`(href|src|content)=(["'])((?:\\.\\.\\/)+)${folder}\\/`, 'g');
     updated = updated.replace(relativePattern, `$1=$2${absAssets}${folder}/`);
-    
-    // Match patterns starting with just the folder name (no ../)
+
+    // href/src="folder/..." => /assets/laxapellets_se/folder/...
     const directPattern = new RegExp(`(href|src)=(["'])${folder}\\/`, 'g');
     updated = updated.replace(directPattern, `$1=$2${absAssets}${folder}/`);
-    
-    // Match url() in styles
-    const urlPattern = new RegExp(`url\\((["']?)((?:\\.\\.\\/)+)${folder}\\/`, 'g');
-    updated = updated.replace(urlPattern, `url($1${absAssets}${folder}/`);
+
+    // url(../../folder/...) => url(/assets/laxapellets_se/folder/...)
+    const urlRelativePattern = new RegExp(`url\\((["']?)((?:\\.\\.\\/)+)${folder}\\/`, 'g');
+    updated = updated.replace(urlRelativePattern, `url($1${absAssets}${folder}/`);
+
+    // url("folder/...) => url("/assets/laxapellets_se/folder/...)
+    const urlDirectPattern = new RegExp(`url\\((["']?)${folder}\\/`, 'g');
+    updated = updated.replace(urlDirectPattern, `url($1${absAssets}${folder}/`);
   }
-  
-  // Fix extracted_styles.css - handle all relative paths to it
-  updated = updated.replace(/(href|src)=(["'])(?:\.\.\/)*extracted_styles\.css/g, 
+
+  // Fix extracted_styles.css
+  updated = updated.replace(/(href|src)=(["'])(?:\.\.\/)*extracted_styles\.css/g,
     `$1=$2${absAssets}extracted_styles.css`);
-  
-  // Fix other external resource directories
-  const externalDirs = ['connect_facebook_net', 'www_google-analytics_com', 'www_googletagmanager_com'];
-  for (const dir of externalDirs) {
-    const pattern = new RegExp(`(href|src)=(["'])(?:\\.\\.\\/)+${dir}\\/`, 'g');
-    updated = updated.replace(pattern, `$1=$2${absAssets}${dir}/`);
-    
-    // Also handle direct patterns
-    const directPattern = new RegExp(`(href|src)=(["'])${dir}\\/`, 'g');
-    updated = updated.replace(directPattern, `$1=$2${absAssets}${dir}/`);
-  }
-  
+
+  // Fix lead modal assets injected as /css/... or /js/...
+  updated = updated.replace(/(href|src)=(["'])\/(css|js)\/(lead-modal\.(?:css|js))/g,
+    `$1=$2${absAssets}$3/$4`);
+
+  // Fix srcset values like: srcset="wp-content/... 600w, wp-content/... 768w"
+  updated = updated.replace(/srcset=(["'])([^"']*)\1/g, (match, quote, value) => {
+    const parts = value
+      .split(',')
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .map((entry) => {
+        const [rawUrl, ...rest] = entry.split(/\s+/);
+        if (!rawUrl) return entry;
+
+        // Ignore absolute/external/data URLs
+        if (
+          /^(https?:)?\/\//i.test(rawUrl) ||
+          rawUrl.startsWith('data:') ||
+          rawUrl.startsWith('blob:') ||
+          rawUrl.startsWith('/')
+        ) {
+          return entry;
+        }
+
+        let url = rawUrl.replace(/^\.\//, '').replace(/^(\.\.\/)+/, '');
+
+        const isAsset = allAssetDirs.some((f) => url.startsWith(`${f}/`));
+
+        if (isAsset) url = `${absAssets}${url}`;
+
+        return [url, ...rest].join(' ');
+      });
+
+    return `srcset=${quote}${parts.join(', ')}${quote}`;
+  });
+
+  // Fix url(...) in inline styles that have relative paths
+  updated = updated.replace(/url\((["']?)(?:\.\.\/)*([a-zA-Z0-9_\-\/]+\.(jpg|jpeg|png|webp|svg|gif))\1\)/g,
+    (match, quote, path) => {
+      // Check if this path starts with an asset folder
+      const isAsset = allAssetDirs.some((f) => path.startsWith(`${f}/`));
+      if (isAsset) {
+        return `url(${quote}${absAssets}${path}${quote})`;
+      }
+      return match;
+    });
+
   // Fix all remaining ../something patterns that should point to assets
-  // This catches any files directly in the source root
-  updated = updated.replace(/(href|src)=(["'])(?:\.\.\/)+([a-zA-Z0-9_\-]+\.(css|js|json|xml|ico|png|jpg|jpeg|webp|svg|gif))/g, 
+  updated = updated.replace(/(href|src)=(["'])(?:\.\.\/)+([a-zA-Z0-9_\-]+\.(css|js|json|xml|ico|png|jpg|jpeg|webp|svg|gif))/g,
     `$1=$2${absAssets}$3`);
-  
-  // Fix internal page links - now without /laxapellets_se/ prefix
+
+  // Fix internal page links
   // Pattern: href="/produkt/laxa-kutterspan/" -> href="/produkt/laxa-kutterspan.html"
-  // But keep external links and asset links
   updated = updated.replace(/href=(["'])\/(?!assets\/|http|#)([^"']*?)\/(["'])/g, (match, q1, pagePath, q2) => {
     const cleanPath = pagePath.replace(/\/$/, '');
     if (!cleanPath) return `href=${q1}/index.html${q2}`;
     return `href=${q1}/${cleanPath}.html${q2}`;
   });
-  
+
   // Pattern: href="/produkt/laxa-kutterspan" (no trailing slash)
   updated = updated.replace(/href=(["'])\/(?!assets\/|http|#)([a-zA-Z0-9\-_\/]+)(["'])/g, (match, q1, pagePath, q2) => {
-    // Skip if already has extension
     if (/\.(html|css|js|jpg|jpeg|png|webp|svg|gif|pdf|xml|json)$/i.test(pagePath)) {
       return match;
     }
     const cleanPath = pagePath.replace(/\/$/, '');
     return `href=${q1}/${cleanPath}.html${q2}`;
   });
-  
+
   // Fix root link "/" to go to /index.html
   updated = updated.replace(/href=(["'])\/(["'])/g, `href=$1/index.html$2`);
-  
+
   // Fix breadcrumb and other links with single quotes too
   updated = updated.replace(/href='\/(?!assets\/|http|#)([^']*?)\/'/g, (match, pagePath) => {
     const cleanPath = pagePath.replace(/\/$/, '');
     if (!cleanPath) return `href='/index.html'`;
     return `href='/${cleanPath}.html'`;
   });
-  
+
   updated = updated.replace(/href='\/(?!assets\/|http|#)([a-zA-Z0-9\-_\/]+)'/g, (match, pagePath) => {
     if (/\.(html|css|js|jpg|jpeg|png|webp|svg|gif|pdf|xml|json)$/i.test(pagePath)) {
       return match;
@@ -140,10 +178,10 @@ function updateAssetPaths(content, targetPath) {
     const cleanPath = pagePath.replace(/\/$/, '');
     return `href='/${cleanPath}.html'`;
   });
-  
+
   // Remove any /laxapellets_se/ prefix from links (cleanup)
   updated = updated.replace(/href=(["'])\/laxapellets_se\//g, `href=$1/`);
-  
+
   return updated;
 }
 
