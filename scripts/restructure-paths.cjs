@@ -143,44 +143,88 @@ function updateAssetPaths(content, targetPath) {
   // Fix all remaining ../something patterns that should point to assets
   updated = updated.replace(/(href|src)=(["'])(?:\.\.\/)+([a-zA-Z0-9_\-]+\.(css|js|json|xml|ico|png|jpg|jpeg|webp|svg|gif))/g,
     `$1=$2${absAssets}$3`);
+  // Fix internal page links (convert WordPress-style paths to flat *.html)
+  // Handles:
+  //  - href="/produkt/foo/"        -> href="/produkt/foo.html"
+  //  - href="produkt/foo/"         -> href="/produkt/foo.html"
+  //  - href="produkt/foo/.html"    -> href="/produkt/foo.html"
+  //  - href="/"                    -> href="/index.html"
+  //  - Also fixes single-quoted hrefs
 
-  // Fix internal page links
-  // Pattern: href="/produkt/laxa-kutterspan/" -> href="/produkt/laxa-kutterspan.html"
-  updated = updated.replace(/href=(["'])\/(?!assets\/|http|#)([^"']*?)\/(["'])/g, (match, q1, pagePath, q2) => {
-    const cleanPath = pagePath.replace(/\/$/, '');
-    if (!cleanPath) return `href=${q1}/index.html${q2}`;
-    return `href=${q1}/${cleanPath}.html${q2}`;
-  });
-
-  // Pattern: href="/produkt/laxa-kutterspan" (no trailing slash)
-  updated = updated.replace(/href=(["'])\/(?!assets\/|http|#)([a-zA-Z0-9\-_\/]+)(["'])/g, (match, q1, pagePath, q2) => {
-    if (/\.(html|css|js|jpg|jpeg|png|webp|svg|gif|pdf|xml|json)$/i.test(pagePath)) {
-      return match;
+  const shouldSkipInternalRewrite = (p) => {
+    if (!p) return true;
+    if (
+      p.startsWith('/') ||
+      /^(https?:)?\/\//i.test(p) ||
+      p.startsWith('#') ||
+      p.startsWith('mailto:') ||
+      p.startsWith('tel:')
+    ) {
+      return true;
     }
-    const cleanPath = pagePath.replace(/\/$/, '');
-    return `href=${q1}/${cleanPath}.html${q2}`;
-  });
 
-  // Fix root link "/" to go to /index.html
-  updated = updated.replace(/href=(["'])\/(["'])/g, `href=$1/index.html$2`);
+    // if it looks like a file (css/js/images/json/xml/pdf/etc), don't touch
+    if (/\.[a-z0-9]{2,6}(?:\?.*)?$/i.test(p) && !p.endsWith('/.html')) return true;
 
-  // Fix breadcrumb and other links with single quotes too
-  updated = updated.replace(/href='\/(?!assets\/|http|#)([^']*?)\/'/g, (match, pagePath) => {
-    const cleanPath = pagePath.replace(/\/$/, '');
-    if (!cleanPath) return `href='/index.html'`;
-    return `href='/${cleanPath}.html'`;
-  });
+    return false;
+  };
 
-  updated = updated.replace(/href='\/(?!assets\/|http|#)([a-zA-Z0-9\-_\/]+)'/g, (match, pagePath) => {
-    if (/\.(html|css|js|jpg|jpeg|png|webp|svg|gif|pdf|xml|json)$/i.test(pagePath)) {
-      return match;
+  const normalizeWpLink = (raw) => {
+    if (!raw) return raw;
+
+    let p = raw;
+
+    // remove any leading "./" or "../" segments
+    p = p.replace(/^\.\//, '').replace(/^(\.\.\/)+/, '');
+
+    // "foo/.html" or "foo/bar/.html" => "foo" or "foo/bar"
+    p = p.replace(/\/\.html$/, '');
+
+    // trailing slash => remove
+    p = p.replace(/\/$/, '');
+
+    if (!p) return '/index.html';
+
+    // already ends with .html
+    if (/\.html(?:\?.*)?$/i.test(p)) return p.startsWith('/') ? p : `/${p}`;
+
+    return p.startsWith('/') ? `${p}.html` : `/${p}.html`;
+  };
+
+  // Absolute paths: href="/produkt/foo/" => /produkt/foo.html
+  updated = updated.replace(
+    /href=("|')\/(?!assets\/|http|#)([^"']*?)\/("|')/g,
+    (match, q1, pagePath, q2) => {
+      const clean = pagePath.replace(/\/$/, '');
+      if (!clean) return `href=${q1}/index.html${q2}`;
+      return `href=${q1}/${clean}.html${q2}`;
     }
-    const cleanPath = pagePath.replace(/\/$/, '');
-    return `href='/${cleanPath}.html'`;
+  );
+
+  // Absolute paths without trailing slash: href="/produkt/foo" => /produkt/foo.html
+  updated = updated.replace(
+    /href=("|')\/(?!assets\/|http|#)([a-zA-Z0-9\-_\/]+)("|')/g,
+    (match, q1, pagePath, q2) => {
+      if (/\.(html|css|js|jpg|jpeg|png|webp|svg|gif|pdf|xml|json)$/i.test(pagePath)) return match;
+      const clean = pagePath.replace(/\/$/, '');
+      if (!clean) return `href=${q1}/index.html${q2}`;
+      return `href=${q1}/${clean}.html${q2}`;
+    }
+  );
+
+  // Relative paths (no leading slash): href="vara-produkter/.html" => /vara-produkter.html
+  updated = updated.replace(/href=("|')([^"']+)("|')/g, (match, q1, pagePath, q2) => {
+    if (pagePath === '/') return `href=${q1}/index.html${q2}`;
+    if (shouldSkipInternalRewrite(pagePath)) return match;
+    const normalized = normalizeWpLink(pagePath);
+    return `href=${q1}${normalized}${q2}`;
   });
+
+  // Fix root link "/" to go to /index.html (in case any remained)
+  updated = updated.replace(/href=("|')\/("|')/g, `href=$1/index.html$2`);
 
   // Remove any /laxapellets_se/ prefix from links (cleanup)
-  updated = updated.replace(/href=(["'])\/laxapellets_se\//g, `href=$1/`);
+  updated = updated.replace(/href=("|')\/laxapellets_se\//g, `href=$1/`);
 
   return updated;
 }
