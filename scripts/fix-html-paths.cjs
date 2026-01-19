@@ -6,6 +6,11 @@ const rootDir = path.join(__dirname, '..', 'public');
 // Replacements to apply to all HTML files
 const regexReplacements = [
   {
+    // Redirect logo link to main index page
+    pattern: /<a href="https:\/\/laxapellets\.se">/g,
+    replace: '<a href="/">'
+  },
+  {
     // Remove mobile "Skapa konto" navigation
     pattern: /<nav id="mob_user_nav"[^>]*>[\s\S]*?<\/nav>/g,
     replace: ''
