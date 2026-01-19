@@ -29,15 +29,19 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Received lead data:", leadData);
 
     const botToken = Deno.env.get("TELEGRAM_BOT_TOKEN");
-    const chatId = Deno.env.get("TELEGRAM_CHAT_ID");
+    const chatIds = Deno.env.get("TELEGRAM_CHAT_ID");
 
-    if (!botToken || !chatId) {
+    if (!botToken || !chatIds) {
       console.error("Missing Telegram configuration");
       return new Response(
         JSON.stringify({ error: "Telegram configuration missing" }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
+
+    // Support multiple chat IDs (comma-separated)
+    const chatIdList = chatIds.split(",").map(id => id.trim()).filter(id => id);
+    console.log(`Sending to ${chatIdList.length} chat(s):`, chatIdList);
 
     // Format products list
     const productsList = leadData.products
@@ -60,25 +64,35 @@ ${leadData.message ? `💬 *Meddelande:*\n${leadData.message}` : ""}
 
 📅 Datum: ${new Date().toLocaleString("sv-SE", { timeZone: "Europe/Stockholm" })}`;
 
-    // Send to Telegram
+    // Send to all Telegram chat IDs
     const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-    const telegramResponse = await fetch(telegramUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message,
-        parse_mode: "Markdown",
-      }),
-    });
+    const results = await Promise.all(
+      chatIdList.map(async (chatId) => {
+        const response = await fetch(telegramUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: "Markdown",
+          }),
+        });
+        const result = await response.json();
+        console.log(`Telegram response for chat ${chatId}:`, result);
+        return { chatId, result };
+      })
+    );
 
-    const telegramResult = await telegramResponse.json();
-    console.log("Telegram response:", telegramResult);
-
-    if (!telegramResult.ok) {
-      console.error("Telegram API error:", telegramResult);
+    const failures = results.filter(r => !r.result.ok);
+    if (failures.length > 0) {
+      console.error("Some Telegram messages failed:", failures);
       return new Response(
-        JSON.stringify({ error: "Failed to send Telegram message", details: telegramResult }),
+        JSON.stringify({ 
+          error: "Some Telegram messages failed", 
+          details: failures,
+          successCount: results.length - failures.length,
+          failCount: failures.length
+        }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
