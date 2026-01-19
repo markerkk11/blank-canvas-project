@@ -4,6 +4,11 @@
     const filterButtons = document.querySelectorAll('.filter-category');
     const products = document.querySelectorAll('.product_wrapper .product');
     
+    console.log('Product filter initialized', { 
+      filterButtons: filterButtons.length, 
+      products: products.length 
+    });
+    
     if (!filterButtons.length || !products.length) return;
     
     // Define category mapping based on product URL patterns
@@ -33,11 +38,61 @@
       product.setAttribute('data-category', category);
     });
     
+    // Function to remove all loading states
+    function removeLoadingStates() {
+      console.log('Removing loading states...');
+      
+      // Remove submitting class from spinner
+      const spinner = document.querySelector('.spinner');
+      if (spinner) {
+        spinner.classList.remove('submitting');
+        console.log('Removed submitting from spinner');
+      }
+      
+      // Remove submitting class from main and any parent
+      const main = document.querySelector('main');
+      if (main) {
+        main.classList.remove('submitting');
+      }
+      
+      // Remove submitting from product wrapper
+      const productWrapper = document.querySelector('.product_wrapper');
+      if (productWrapper) {
+        productWrapper.classList.remove('submitting');
+      }
+      
+      // Remove any blockUI overlays
+      const blockOverlays = document.querySelectorAll('.blockUI, .blockOverlay, .blockMsg');
+      blockOverlays.forEach(function(overlay) {
+        overlay.remove();
+        console.log('Removed blockUI overlay');
+      });
+      
+      // jQuery unblock if available
+      if (typeof jQuery !== 'undefined') {
+        try {
+          if (jQuery.fn.unblock) {
+            jQuery('.product_wrapper').unblock();
+            jQuery('main').unblock();
+            jQuery('body').unblock();
+          }
+          // Also try to remove any loading classes jQuery might have added
+          jQuery('.submitting').removeClass('submitting');
+          jQuery('.loading').removeClass('loading');
+        } catch(e) {
+          console.log('jQuery unblock error:', e);
+        }
+      }
+    }
+    
     // Filter functionality
     filterButtons.forEach(function(button) {
       button.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        console.log('Filter clicked:', this.getAttribute('data-filter'));
         
         const filter = this.getAttribute('data-filter');
         
@@ -58,17 +113,16 @@
           }
         });
         
-        // Remove any loading spinner that might have been triggered
-        const spinner = document.querySelector('.spinner');
-        if (spinner) {
-          spinner.classList.remove('submitting');
-        }
+        // Remove loading states immediately
+        removeLoadingStates();
         
-        // Also unblock any jQuery blockUI if present
-        if (typeof jQuery !== 'undefined' && jQuery.fn.unblock) {
-          jQuery('.product_wrapper').unblock();
-        }
-      });
+        // Also remove after a short delay in case another script adds them
+        setTimeout(removeLoadingStates, 50);
+        setTimeout(removeLoadingStates, 200);
+        setTimeout(removeLoadingStates, 500);
+        
+        return false;
+      }, true); // Use capture phase to run first
     });
     
     // Set "Visa alla" as active by default
