@@ -44,6 +44,11 @@ const regexReplacements = [
     replace: ''
   },
   {
+    // Remove mobile "Skapa konto" navigation
+    pattern: /<nav id="mob_user_nav"[^>]*>[\s\S]*?<\/nav>/g,
+    replace: ''
+  },
+  {
     // Replace login_to_buy div with buy request button
     pattern: /<div id="login_to_buy">[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/g,
     replace: `<div class="buy-request-container" style="margin-top: 20px;">
