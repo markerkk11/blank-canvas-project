@@ -27,6 +27,11 @@ const regexReplacements = [
   {
     pattern: /\.png\.html/g,
     replace: '.png'
+  },
+  {
+    // Remove entire header_cart div element (shopping basket)
+    pattern: /<div id="header_cart">[\s\S]*?<\/a>\s*<\/div>/g,
+    replace: ''
   }
 ];
 
