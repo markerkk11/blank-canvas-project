@@ -63,23 +63,12 @@ function ensureDir(dirPath) {
 function updateAssetPaths(content, targetPath) {
   let updated = content;
   
-  // Calculate depth from target HTML to public/
-  const relativeToTarget = path.relative(targetRoot, targetPath);
-  const pathParts = relativeToTarget.split(path.sep);
-  const depth = pathParts.length - 1; // -1 because the file itself is one level
-  
-  // Path from HTML file to public/ folder, then to assets/laxapellets_se/
-  // e.g., if file is at produkt/laxa-kutterspan.html (depth 1)
-  // we need ../assets/laxapellets_se/ to reach assets
-  const upLevels = depth + 1; // +1 to go up to public root
-  const toAssets = '../'.repeat(upLevels) + 'assets/laxapellets_se/';
-  
   // For absolute paths, use /assets/laxapellets_se/
   const absAssets = '/assets/laxapellets_se/';
   
   // Replace various relative path patterns to assets
   // Handle: ../../wp-content, ../wp-content, ./wp-content, wp-content (at start)
-  const assetFolders = ['wp-content', 'wp-includes', 'wp-admin', 'css', 'js', 'assets'];
+  const assetFolders = ['wp-content', 'wp-includes', 'wp-admin', 'css', 'js', 'assets', 'wp-json'];
   
   for (const folder of assetFolders) {
     // Match patterns like href="../../wp-content/ or src='../wp-content/
@@ -94,6 +83,26 @@ function updateAssetPaths(content, targetPath) {
     const urlPattern = new RegExp(`url\\((["']?)((?:\\.\\.\\/)+)${folder}\\/`, 'g');
     updated = updated.replace(urlPattern, `url($1${absAssets}${folder}/`);
   }
+  
+  // Fix extracted_styles.css - handle all relative paths to it
+  updated = updated.replace(/(href|src)=(["'])(?:\.\.\/)*extracted_styles\.css/g, 
+    `$1=$2${absAssets}extracted_styles.css`);
+  
+  // Fix other external resource directories
+  const externalDirs = ['connect_facebook_net', 'www_google-analytics_com', 'www_googletagmanager_com'];
+  for (const dir of externalDirs) {
+    const pattern = new RegExp(`(href|src)=(["'])(?:\\.\\.\\/)+${dir}\\/`, 'g');
+    updated = updated.replace(pattern, `$1=$2${absAssets}${dir}/`);
+    
+    // Also handle direct patterns
+    const directPattern = new RegExp(`(href|src)=(["'])${dir}\\/`, 'g');
+    updated = updated.replace(directPattern, `$1=$2${absAssets}${dir}/`);
+  }
+  
+  // Fix all remaining ../something patterns that should point to assets
+  // This catches any files directly in the source root
+  updated = updated.replace(/(href|src)=(["'])(?:\.\.\/)+([a-zA-Z0-9_\-]+\.(css|js|json|xml|ico|png|jpg|jpeg|webp|svg|gif))/g, 
+    `$1=$2${absAssets}$3`);
   
   // Fix internal page links - now without /laxapellets_se/ prefix
   // Pattern: href="/produkt/laxa-kutterspan/" -> href="/produkt/laxa-kutterspan.html"
