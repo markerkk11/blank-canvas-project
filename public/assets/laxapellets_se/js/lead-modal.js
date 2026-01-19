@@ -106,7 +106,7 @@
                     </label>
                     <div class="lead-product-quantity ${isSelected ? 'visible' : ''}">
                       <div class="lead-quantity-wrapper">
-                        <input type="number" name="quantity-${p.id}" class="lead-quantity-input" value="1" min="1" max="999" step="1">
+                        <input type="number" name="quantity-${p.id}" class="lead-quantity-input" value="1" min="0.01" max="999" step="0.01">
                         <span class="lead-unit-label">${p.unit}</span>
                       </div>
                     </div>
@@ -169,9 +169,9 @@
       });
       
       quantityInput.addEventListener('input', function() {
-        // Ensure quantity is at least 1
-        if (parseFloat(this.value) < 1 || this.value === '' || this.value === '0') {
-          this.value = 1;
+        // Ensure quantity is at least 0.01
+        if (parseFloat(this.value) < 0.01 || this.value === '' || this.value === '0') {
+          this.value = 0.01;
         }
         calculateTotal();
       });
