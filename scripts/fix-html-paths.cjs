@@ -32,6 +32,11 @@ const regexReplacements = [
     // Remove entire header_cart div element (shopping basket)
     pattern: /<div id="header_cart">[\s\S]*?<\/a>\s*<\/div>/g,
     replace: ''
+  },
+  {
+    // Remove shipping-check element
+    pattern: /<div class="prod_util prod_util--boxed shipping-check">[\s\S]*?<div id="closest_resellers"><\/div>\s*<\/div>\s*<\/div>/g,
+    replace: ''
   }
 ];
 
