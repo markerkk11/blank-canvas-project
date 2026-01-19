@@ -345,6 +345,54 @@
   color: #666;
 }
 
+/* Lead Buy Button Section - replaces login form */
+.lead-buy-section {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  border: 2px solid #e0e0e0;
+  margin: 20px 0;
+}
+
+.lead-buy-section h2 {
+  margin: 0 0 12px;
+  font-size: 22px;
+  color: #1d525c;
+  font-weight: 700;
+}
+
+.lead-buy-section p {
+  margin: 0 0 20px;
+  color: #666;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.lead-buy-section .lead-modal-trigger.single-button {
+  display: inline-block;
+  padding: 16px 40px;
+  background: linear-gradient(135deg, #1d525c, #2a6b77);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lead-buy-section .lead-modal-trigger.single-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(29, 82, 92, 0.4);
+}
+
+.lead-buy-section .lead-modal-trigger.single-button:active {
+  transform: translateY(0);
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .lead-modal {
@@ -365,5 +413,13 @@
   
   .lead-modal-header h2 {
     font-size: 20px;
+  }
+  
+  .lead-buy-section {
+    padding: 20px;
+  }
+  
+  .lead-buy-section h2 {
+    font-size: 18px;
   }
 }

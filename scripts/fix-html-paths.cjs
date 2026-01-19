@@ -3,12 +3,23 @@ const path = require('path');
 
 const rootDir = path.join(__dirname, '..', 'public');
 
-// Only remove mobile "Skapa konto" navigation
+// Replacements to apply to all HTML files
 const regexReplacements = [
   {
     // Remove mobile "Skapa konto" navigation
     pattern: /<nav id="mob_user_nav"[^>]*>[\s\S]*?<\/nav>/g,
     replace: ''
+  },
+  {
+    // Replace login_to_buy div with lead modal button
+    pattern: /<div id="login_to_buy">[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/g,
+    replace: `<div id="lead_buy_button" class="lead-buy-section">
+      <h2>Skicka köpförfrågan</h2>
+      <p>Intresserad av denna produkt? Skicka en köpförfrågan så kontaktar vi dig med prisuppgift och leveransinformation.</p>
+      <button type="button" class="lead-modal-trigger single-button" onclick="if(window.openLeadModal) window.openLeadModal();">
+        Skicka köpförfrågan
+      </button>
+    </div>`
   }
 ];
 
