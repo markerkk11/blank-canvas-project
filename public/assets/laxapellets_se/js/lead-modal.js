@@ -1,16 +1,16 @@
 // Lead Modal Form for Buy Request
 (function() {
-  // Available products list with units
+  // Available products list with units and numeric prices
   const products = [
-    { id: 'laxa-finspan', name: 'Laxå Finspån', price: '3 598.00 kr/pall', unit: 'pall', unitPlural: 'pallar' },
-    { id: 'laxa-kutterspan', name: 'Laxå Kutterspån', price: '2 698.00 kr/pall', unit: 'pall', unitPlural: 'pallar' },
-    { id: 'storsack-stropellets-8mm', name: 'Storsäck Ströpellets', price: '2 523.00 kr/st', unit: 'säck', unitPlural: 'säckar' },
-    { id: 'storsack-varmepellets-8mm', name: 'Storsäck Pellets 8mm', price: '2 523.00 kr/st', unit: 'säck', unitPlural: 'säckar' },
-    { id: 'stropellets-bulk-8mm', name: 'Ströpellets bulk 8mm', price: '4 548.00 kr/ton', unit: 'ton', unitPlural: 'ton' },
-    { id: 'stropellets', name: 'Ströpellets', price: '2 198.00 kr/pall', unit: 'pall', unitPlural: 'pallar' },
-    { id: 'varmepellets-6mm', name: 'Värmepellets 6mm', price: '4 198.00 kr/pall', unit: 'pall', unitPlural: 'pallar' },
-    { id: 'varmepellets-8mm-bulk', name: 'Värmepellets 8mm Bulk', price: '4 548.00 kr/ton', unit: 'ton', unitPlural: 'ton' },
-    { id: 'varmepellets-8mm', name: 'Värmepellets 8mm', price: '4 198.00 kr/pall', unit: 'pall', unitPlural: 'pallar' }
+    { id: 'laxa-finspan', name: 'Laxå Finspån', price: '3 598.00 kr/pall', numericPrice: 3598, unit: 'pall', unitPlural: 'pallar' },
+    { id: 'laxa-kutterspan', name: 'Laxå Kutterspån', price: '2 698.00 kr/pall', numericPrice: 2698, unit: 'pall', unitPlural: 'pallar' },
+    { id: 'storsack-stropellets-8mm', name: 'Storsäck Ströpellets', price: '2 523.00 kr/st', numericPrice: 2523, unit: 'säck', unitPlural: 'säckar' },
+    { id: 'storsack-varmepellets-8mm', name: 'Storsäck Pellets 8mm', price: '2 523.00 kr/st', numericPrice: 2523, unit: 'säck', unitPlural: 'säckar' },
+    { id: 'stropellets-bulk-8mm', name: 'Ströpellets bulk 8mm', price: '4 548.00 kr/ton', numericPrice: 4548, unit: 'ton', unitPlural: 'ton' },
+    { id: 'stropellets', name: 'Ströpellets', price: '2 198.00 kr/pall', numericPrice: 2198, unit: 'pall', unitPlural: 'pallar' },
+    { id: 'varmepellets-6mm', name: 'Värmepellets 6mm', price: '4 198.00 kr/pall', numericPrice: 4198, unit: 'pall', unitPlural: 'pallar' },
+    { id: 'varmepellets-8mm-bulk', name: 'Värmepellets 8mm Bulk', price: '4 548.00 kr/ton', numericPrice: 4548, unit: 'ton', unitPlural: 'ton' },
+    { id: 'varmepellets-8mm', name: 'Värmepellets 8mm', price: '4 198.00 kr/pall', numericPrice: 4198, unit: 'pall', unitPlural: 'pallar' }
   ];
 
   // Get current product from page
@@ -60,6 +60,39 @@
         { value: '9', label: '9 pallar' },
         { value: '10', label: '10+ pallar' }
       ];
+    }
+  }
+
+  // Calculate total price
+  function calculateTotal() {
+    const productItems = document.querySelectorAll('.lead-product-item');
+    let total = 0;
+    
+    productItems.forEach(item => {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      if (checkbox && checkbox.checked) {
+        const productId = checkbox.value;
+        const product = products.find(p => p.id === productId);
+        const quantitySelect = item.querySelector('.lead-quantity-select');
+        let quantity = parseInt(quantitySelect.value) || 1;
+        
+        // For 10+ options, use 10 as minimum
+        if (quantitySelect.value.includes('+')) {
+          quantity = 10;
+        }
+        
+        if (product && product.numericPrice) {
+          total += product.numericPrice * quantity;
+        }
+      }
+    });
+    
+    // Update total display
+    const totalDisplay = document.getElementById('lead-total-price');
+    if (totalDisplay) {
+      const formattedTotal = total.toLocaleString('sv-SE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      totalDisplay.textContent = `${formattedTotal} kr`;
+      totalDisplay.parentElement.style.display = total > 0 ? 'flex' : 'none';
     }
   }
 
@@ -119,6 +152,11 @@
               </div>
             </div>
             
+            <div class="lead-order-total" style="display: none;">
+              <span class="lead-total-label">Totalt ordervärde:</span>
+              <span id="lead-total-price" class="lead-total-amount">0.00 kr</span>
+            </div>
+            
             <div class="lead-form-group">
               <label for="lead-message">Övrig information</label>
               <textarea id="lead-message" name="message" rows="3" placeholder="Ange eventuell extra information om din beställning..."></textarea>
@@ -159,12 +197,19 @@
     productItems.forEach(item => {
       const checkbox = item.querySelector('input[type="checkbox"]');
       const quantityDiv = item.querySelector('.lead-product-quantity');
+      const quantitySelect = item.querySelector('.lead-quantity-select');
       
       checkbox.addEventListener('change', function() {
         item.classList.toggle('selected', this.checked);
         quantityDiv.classList.toggle('visible', this.checked);
+        calculateTotal();
       });
+      
+      quantitySelect.addEventListener('change', calculateTotal);
     });
+    
+    // Calculate initial total if product is pre-selected
+    calculateTotal();
     
     // Form submission
     form.addEventListener('submit', function(e) {
