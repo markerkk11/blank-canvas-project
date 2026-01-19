@@ -13,11 +13,13 @@ const regexReplacements = [
   {
     // Replace login_to_buy div with lead modal button
     pattern: /<div id="login_to_buy">[\s\S]*?<\/div>\s*<\/div>/g,
-    replace: `<div class="buy-request-container" style="margin-top: 20px;">
-						<button type="button" class="button button-primary" style="width: 100%; padding: 15px 30px; font-size: 18px; font-weight: bold; background-color: #1d525c; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="if(window.openLeadModal) window.openLeadModal();">
-							Skicka köpförfrågan
-						</button>
-					</div>`
+    replace: `<div id="lead_buy_button" class="lead-buy-section">
+      <h2>Skicka köpförfrågan</h2>
+      <p>Intresserad av denna produkt? Skicka en köpförfrågan så kontaktar vi dig med prisuppgift och leveransinformation.</p>
+      <button type="button" class="lead-modal-trigger single-button" onclick="if(window.openLeadModal) window.openLeadModal();">
+        Skicka köpförfrågan
+      </button>
+    </div>`
   }
 ];
 
