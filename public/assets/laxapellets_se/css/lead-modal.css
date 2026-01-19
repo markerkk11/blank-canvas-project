@@ -211,21 +211,44 @@
   display: block;
 }
 
-.lead-quantity-select {
-  width: 100%;
+/* Quantity input with unit label */
+.lead-quantity-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lead-quantity-input {
+  width: 80px;
   padding: 8px 12px;
   border: 2px solid #1d525c;
   border-radius: 6px;
   font-size: 14px;
   background: #fff;
   color: #333;
-  cursor: pointer;
+  text-align: center;
   transition: box-shadow 0.2s ease;
 }
 
-.lead-quantity-select:focus {
+.lead-quantity-input:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(29, 82, 92, 0.15);
+}
+
+.lead-quantity-input::-webkit-outer-spin-button,
+.lead-quantity-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.lead-quantity-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.lead-unit-label {
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 /* Shipping info */
