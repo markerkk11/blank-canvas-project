@@ -1,0 +1,270 @@
+/* Lead Modal Styles */
+.lead-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: 20px;
+}
+
+.lead-modal-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lead-modal {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.lead-modal-overlay.open .lead-modal {
+  transform: translateY(0);
+}
+
+.lead-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #666;
+  transition: background 0.2s ease, color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lead-modal-close:hover {
+  background: #1d525c;
+  color: #fff;
+}
+
+.lead-modal-header {
+  padding: 30px 30px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.lead-modal-header h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  color: #1d525c;
+  font-weight: 700;
+}
+
+.lead-modal-header p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.lead-form {
+  padding: 25px 30px 30px;
+}
+
+.lead-form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.lead-form-row .lead-form-group {
+  flex: 1;
+}
+
+.lead-form-group {
+  margin-bottom: 20px;
+}
+
+.lead-form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.lead-form-group input[type="text"],
+.lead-form-group input[type="tel"],
+.lead-form-group select,
+.lead-form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+}
+
+.lead-form-group input:focus,
+.lead-form-group select:focus,
+.lead-form-group textarea:focus {
+  outline: none;
+  border-color: #1d525c;
+  box-shadow: 0 0 0 3px rgba(29, 82, 92, 0.1);
+}
+
+.lead-form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Products list */
+.lead-products-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.lead-product-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  gap: 10px;
+}
+
+.lead-product-item:hover {
+  background: #f5f5f5;
+}
+
+.lead-product-item.selected {
+  background: rgba(29, 82, 92, 0.1);
+}
+
+.lead-product-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #1d525c;
+  cursor: pointer;
+}
+
+.lead-product-name {
+  flex: 1;
+  font-weight: 500;
+  color: #333;
+}
+
+.lead-product-price {
+  color: #1d525c;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Shipping info */
+.lead-shipping-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 8px;
+  border-left: 4px solid #1d525c;
+}
+
+.shipping-label {
+  color: #666;
+  font-size: 14px;
+}
+
+.shipping-cost {
+  font-weight: 700;
+  color: #1d525c;
+  font-size: 15px;
+}
+
+/* Submit button */
+.lead-submit-btn {
+  width: 100%;
+  padding: 16px 30px;
+  background: linear-gradient(135deg, #1d525c, #2a6b77);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lead-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(29, 82, 92, 0.4);
+}
+
+.lead-submit-btn:active {
+  transform: translateY(0);
+}
+
+/* Success message */
+.lead-success {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.lead-success svg {
+  margin-bottom: 20px;
+}
+
+.lead-success h3 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  color: #1d525c;
+}
+
+.lead-success p {
+  margin: 0 0 25px;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .lead-modal {
+    margin: 10px;
+    max-height: calc(100vh - 20px);
+  }
+  
+  .lead-modal-header,
+  .lead-form {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .lead-form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .lead-modal-header h2 {
+    font-size: 20px;
+  }
+}
