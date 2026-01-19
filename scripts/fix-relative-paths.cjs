@@ -33,55 +33,44 @@ function fixPaths(filePath) {
   // Get relative path from rootDir to determine depth
   const relativePath = path.relative(rootDir, filePath);
   const depth = relativePath.split(path.sep).length - 1; // -1 because file itself doesn't count
-  
+
   console.log(`Processing: ${relativePath} (depth: ${depth})`);
-  
-  // Files that were folder/.html are now folder.html
-  // They moved UP one level, so need one LESS "../"
-  
-  // Fix patterns: remove one level of "../" from relative paths
-  // ../../ becomes ../
-  // ../../../ becomes ../../
-  // etc.
-  
-  // Pattern for href, src, srcset with relative paths starting with ../
-  // We need to be careful to only fix paths that have the extra "../"
-  
-  // Replace ../../wp-content with ../wp-content (for files in subfolders like produkt/)
-  content = content.replace(/href="\.\.\/\.\.\/wp-content\//g, 'href="../wp-content/');
-  content = content.replace(/href='\.\.\/\.\.\/wp-content\//g, "href='../wp-content/");
-  content = content.replace(/src="\.\.\/\.\.\/wp-content\//g, 'src="../wp-content/');
-  content = content.replace(/src='\.\.\/\.\.\/wp-content\//g, "src='../wp-content/");
-  
-  // Also fix wp-includes
-  content = content.replace(/href="\.\.\/\.\.\/wp-includes\//g, 'href="../wp-includes/');
-  content = content.replace(/href='\.\.\/\.\.\/wp-includes\//g, "href='../wp-includes/");
-  content = content.replace(/src="\.\.\/\.\.\/wp-includes\//g, 'src="../wp-includes/');
-  content = content.replace(/src='\.\.\/\.\.\/wp-includes\//g, "src='../wp-includes/");
-  
-  // Fix wp-json paths
-  content = content.replace(/href="\.\.\/\.\.\/wp-json\//g, 'href="../wp-json/');
-  content = content.replace(/src="\.\.\/\.\.\/wp-json\//g, 'src="../wp-json/');
-  
-  // Fix srcset patterns (common in images)
-  content = content.replace(/srcset="([^"]*?)\.\.\/\.\.\/wp-content\//g, 'srcset="$1../wp-content/');
-  
-  // Fix url() in CSS
-  content = content.replace(/url\(\.\.\/\.\.\/wp-content\//g, 'url(../wp-content/');
-  content = content.replace(/url\('\.\.\/\.\.\/wp-content\//g, "url('../wp-content/");
-  content = content.replace(/url\("\.\.\/\.\.\/wp-content\//g, 'url("../wp-content/');
-  
-  // For deeper nested files (like aktuellt/page/2.html -> was aktuellt/page/2/.html)
-  // ../../../ becomes ../../
-  content = content.replace(/href="\.\.\/\.\.\/\.\.\/wp-content\//g, 'href="../../wp-content/');
-  content = content.replace(/src="\.\.\/\.\.\/\.\.\/wp-content\//g, 'src="../../wp-content/');
-  content = content.replace(/href="\.\.\/\.\.\/\.\.\/wp-includes\//g, 'href="../../wp-includes/');
-  content = content.replace(/src="\.\.\/\.\.\/\.\.\/wp-includes\//g, 'src="../../wp-includes/');
-  
-  // Fix any remaining srcset with multiple image sources
-  // Match pattern: 600w, ../.. and replace the ../ 
-  content = content.replace(/, \.\.\/\.\.\/wp-content\//g, ', ../wp-content/');
-  content = content.replace(/, \.\.\/\.\.\/\.\.\/wp-content\//g, ', ../../wp-content/');
+
+  // Normalize WordPress-style asset paths so they always point to the correct
+  // folder inside /assets/laxapellets_se, regardless of how deep the HTML file is.
+  //
+  // Example:
+  // - /assets/laxapellets_se/vara-produkter.html        -> wp-content/...
+  // - /assets/laxapellets_se/produkt/foo.html          -> ../wp-content/...
+  // - /assets/laxapellets_se/aktuellt/page/2.html      -> ../../wp-content/...
+  const prefix = depth === 0 ? '' : '../'.repeat(depth);
+
+  const normalizeFolderRefs = (folder) => {
+    // href/src attributes
+    content = content.replace(
+      new RegExp(`(href|src)=(["'])(?:\\.\\.\\/)+${folder}\\/`, 'g'),
+      `$1=$2${prefix}${folder}/`
+    );
+
+    // srcset may contain multiple URLs
+    content = content.replace(
+      new RegExp(`(?:\\.\\.\\/)+${folder}\\/`, 'g'),
+      `${prefix}${folder}/`
+    );
+
+    // url() in inline styles or style blocks
+    content = content.replace(
+      new RegExp(`url\\((["']?)(?:\\.\\.\\/)+${folder}\\/`, 'g'),
+      `url($1${prefix}${folder}/`
+    );
+  };
+
+  normalizeFolderRefs('wp-content');
+  normalizeFolderRefs('wp-includes');
+  normalizeFolderRefs('wp-json');
+
+  // Note: we intentionally do NOT touch external-tracker folders like
+  // connect_facebook_net/ since their location may differ from wp-* folders.
   
   if (content !== originalContent) {
     fs.writeFileSync(filePath, content, 'utf8');
