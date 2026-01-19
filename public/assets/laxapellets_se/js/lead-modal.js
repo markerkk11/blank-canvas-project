@@ -234,7 +234,7 @@
     calculateTotal();
     
     // Form submission
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
       e.preventDefault();
       
       const formData = new FormData(form);
@@ -259,23 +259,49 @@
         return;
       }
       
-      // Format products for display
-      const productsDisplay = selectedProducts
-        .map(p => `${p.name}: ${p.quantity} ${p.quantity === '1' ? p.unit : products.find(pr => pr.name === p.name)?.unitPlural || p.unit}`)
-        .join(', ');
+      // Get total price
+      const totalPriceEl = document.getElementById('lead-total-price');
+      const totalPrice = totalPriceEl ? totalPriceEl.textContent : 'Ej beräknat';
       
-      // Here you would normally send the data to a server
+      // Prepare data for submission
       const data = {
         firstname: formData.get('firstname'),
         lastname: formData.get('lastname'),
         phone: formData.get('phone'),
         products: selectedProducts,
-        message: formData.get('message')
+        message: formData.get('message'),
+        totalPrice: totalPrice
       };
       
       console.log('Lead form submitted:', data);
       
-      // Show success message
+      // Show loading state
+      const submitBtn = form.querySelector('.lead-submit-btn');
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.textContent = 'Skickar...';
+      submitBtn.disabled = true;
+      
+      // Send to Telegram via edge function
+      try {
+        const response = await fetch('https://uisrdborglycmwhdrouo.supabase.co/functions/v1/send-telegram-lead', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        console.log('Telegram response:', result);
+        
+        if (!response.ok) {
+          console.error('Failed to send to Telegram:', result);
+        }
+      } catch (error) {
+        console.error('Error sending to Telegram:', error);
+      }
+      
+      // Show success message regardless (don't block user experience)
       form.innerHTML = `
         <div class="lead-success">
           <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#1d525c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
