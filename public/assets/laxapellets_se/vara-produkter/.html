@@ -282,7 +282,7 @@ var wpm = {"ajax_url":"https://laxapellets.se/wp-admin/admin-ajax.php","root":"h
 		<main class="all-products">
 			<div class="product_wrapper product_wrapper--threes horiz">
 				
-<a class="product shadow rounded" href="../produkt/varmepellets-6mm/.html" data-unittype="/pall">
+<a class="product shadow rounded" href="../produkt/varmepellets-6mm/.html" data-unittype="/pall" data-category="18">
 
 	<figure class="product__image">
 				
@@ -349,7 +349,7 @@ var wpm = {"ajax_url":"https://laxapellets.se/wp-admin/admin-ajax.php","root":"h
 	</div>
 
 </a>
-<a class="product shadow rounded" href="../produkt/varmepellets-8mm/.html" data-unittype="/pall">
+<a class="product shadow rounded" href="../produkt/varmepellets-8mm/.html" data-unittype="/pall" data-category="18">
 
 	<figure class="product__image">
 				
@@ -416,7 +416,7 @@ var wpm = {"ajax_url":"https://laxapellets.se/wp-admin/admin-ajax.php","root":"h
 	</div>
 
 </a>
-<a class="product shadow rounded" href="../produkt/varmepellets-8mm-bulk/.html" data-unittype="/ton">
+<a class="product shadow rounded" href="../produkt/varmepellets-8mm-bulk/.html" data-unittype="/ton" data-category="18">
 
 	<figure class="product__image">
 				
@@ -472,7 +472,7 @@ var wpm = {"ajax_url":"https://laxapellets.se/wp-admin/admin-ajax.php","root":"h
 	</div>
 
 </a>
-<a class="product shadow rounded" href="../produkt/stropellets/.html" data-unittype="/pall">
+<a class="product shadow rounded" href="../produkt/stropellets/.html" data-unittype="/pall" data-category="165">
 
 	<figure class="product__image">
 				
@@ -533,7 +533,7 @@ var wpm = {"ajax_url":"https://laxapellets.se/wp-admin/admin-ajax.php","root":"h
 	</div>
 
 </a>
-<a class="product shadow rounded" href="../produkt/storsack-varmepellets-8mm/.html" data-unittype="/st">
+<a class="product shadow rounded" href="../produkt/storsack-varmepellets-8mm/.html" data-unittype="/st" data-category="18">
 
 	<figure class="product__image">
 				
@@ -600,7 +600,7 @@ var wpm = {"ajax_url":"https://laxapellets.se/wp-admin/admin-ajax.php","root":"h
 	</div>
 
 </a>
-<a class="product shadow rounded" href="../produkt/stropellets-bulk-8mm/.html" data-unittype="/ton">
+<a class="product shadow rounded" href="../produkt/stropellets-bulk-8mm/.html" data-unittype="/ton" data-category="165">
 
 	<figure class="product__image">
 				
@@ -656,7 +656,7 @@ var wpm = {"ajax_url":"https://laxapellets.se/wp-admin/admin-ajax.php","root":"h
 	</div>
 
 </a>
-<a class="product shadow rounded" href="../produkt/storsack-stropellets-8mm/.html" data-unittype="/st">
+<a class="product shadow rounded" href="../produkt/storsack-stropellets-8mm/.html" data-unittype="/st" data-category="165">
 
 	<figure class="product__image">
 				
@@ -723,7 +723,7 @@ var wpm = {"ajax_url":"https://laxapellets.se/wp-admin/admin-ajax.php","root":"h
 	</div>
 
 </a>
-<a class="product shadow rounded" href="../produkt/laxa-kutterspan/.html" data-unittype="/pall">
+<a class="product shadow rounded" href="../produkt/laxa-kutterspan/.html" data-unittype="/pall" data-category="165">
 
 	<figure class="product__image">
 				
@@ -790,7 +790,7 @@ var wpm = {"ajax_url":"https://laxapellets.se/wp-admin/admin-ajax.php","root":"h
 	</div>
 
 </a>
-<a class="product shadow rounded" href="../produkt/laxa-finspan/.html" data-unittype="/pall">
+<a class="product shadow rounded" href="../produkt/laxa-finspan/.html" data-unittype="/pall" data-category="165">
 
 	<figure class="product__image">
 				
@@ -1068,5 +1068,49 @@ fbq('track', 'PageView', {
 </script>
         
     <script src="../js/lead-modal.js"></script>
+<script>
+// Product Category Filter
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.filter-category');
+        const products = document.querySelectorAll('.product_wrapper .product');
+        const spinner = document.querySelector('.spinner');
+        const productWrapper = document.querySelector('.product_wrapper');
+        
+        filterButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+                
+                // Update active state on buttons
+                filterButtons.forEach(function(btn) {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show spinner and hide products
+                if (spinner) spinner.style.display = 'flex';
+                if (productWrapper) productWrapper.style.opacity = '0.5';
+                
+                // Small delay to show loading animation
+                setTimeout(function() {
+                    products.forEach(function(product) {
+                        const category = product.getAttribute('data-category');
+                        
+                        if (filter === 'all' || category === filter) {
+                            product.style.display = '';
+                        } else {
+                            product.style.display = 'none';
+                        }
+                    });
+                    
+                    // Hide spinner and show products
+                    if (spinner) spinner.style.display = 'none';
+                    if (productWrapper) productWrapper.style.opacity = '1';
+                }, 300);
+            });
+        });
+    });
+})();
+</script>
 </body>
 </html>
