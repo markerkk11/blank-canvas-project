@@ -41,6 +41,22 @@ function replaceAll(content) {
     .replace(/(href|src|action)=(['"])assets\/laxapellets_se\//g, '$1=$2/assets/laxapellets_se/')
     .replace(/url\((['"]?)assets\/laxapellets_se\//g, 'url($1/assets/laxapellets_se/');
 
+  // 3) Fix category links that point to the generic product page
+  //    and normalize category "folder" links to their "/.html" entry file.
+  updated = updated
+    // Nav/footer links incorrectly pointing to "Våra produkter"
+    .replace(
+      /<a([^>]*?)href=(['"])\/assets\/laxapellets_se\/vara-produkter\/\.html\2([^>]*)>\s*(Värmepellets|V&auml;rmepellets)\s*<\/a>/g,
+      '<a$1href=$2/assets/laxapellets_se/varmepellets/.html$2$3>$4</a>'
+    )
+    .replace(
+      /<a([^>]*?)href=(['"])\/assets\/laxapellets_se\/vara-produkter\/\.html\2([^>]*)>\s*(Ströprodukter|Str&ouml;produkter)\s*<\/a>/g,
+      '<a$1href=$2/assets/laxapellets_se/stroprodukter/.html$2$3>$4</a>'
+    )
+    // Home "puff" buttons (and any other links) missing the "/.html" entry
+    .replace(/(href=)(['"])\/assets\/laxapellets_se\/varmepellets\/?\2/g, '$1$2/assets/laxapellets_se/varmepellets/.html$2')
+    .replace(/(href=)(['"])\/assets\/laxapellets_se\/stroprodukter\/?\2/g, '$1$2/assets/laxapellets_se/stroprodukter/.html$2');
+
   return updated;
 }
 
