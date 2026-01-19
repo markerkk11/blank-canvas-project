@@ -4,7 +4,7 @@
   const products = [
     { id: 'laxa-finspan', name: 'Laxå Finspån', price: '3 598.00 kr/pall', unit: 'pall', unitPlural: 'pallar' },
     { id: 'laxa-kutterspan', name: 'Laxå Kutterspån', price: '2 698.00 kr/pall', unit: 'pall', unitPlural: 'pallar' },
-    { id: 'storsack-stropellets-8mm', name: 'Storsäck Ströpellets', price: '2 523.00 kr', unit: 'säck', unitPlural: 'säckar' },
+    { id: 'storsack-stropellets-8mm', name: 'Storsäck Ströpellets', price: '2 523.00 kr/st', unit: 'säck', unitPlural: 'säckar' },
     { id: 'storsack-varmepellets-8mm', name: 'Storsäck Pellets 8mm', price: '2 523.00 kr/st', unit: 'säck', unitPlural: 'säckar' },
     { id: 'stropellets-bulk-8mm', name: 'Ströpellets bulk 8mm', price: '4 548.00 kr/ton', unit: 'ton', unitPlural: 'ton' },
     { id: 'stropellets', name: 'Ströpellets', price: '2 198.00 kr/pall', unit: 'pall', unitPlural: 'pallar' },
