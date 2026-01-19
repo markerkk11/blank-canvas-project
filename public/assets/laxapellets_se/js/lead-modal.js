@@ -1,24 +1,16 @@
 // Lead Modal Form for Buy Request
 (function() {
-  // Available products list
+  // Available products list with units
   const products = [
-    { id: 'laxa-finspan', name: 'Laxå Finspån', price: '3 598.00 kr/pall' },
-    { id: 'laxa-kutterspan', name: 'Laxå Kutterspån', price: '2 698.00 kr/pall' },
-    { id: 'storsack-stropellets-8mm', name: 'Storsäck Ströpellets', price: '2 523.00 kr' },
-    { id: 'storsack-varmepellets-8mm', name: 'Storsäck Pellets 8mm', price: '2 523.00 kr' },
-    { id: 'stropellets-bulk-8mm', name: 'Ströpellets bulk 8mm', price: 'Kontakta oss' },
-    { id: 'stropellets', name: 'Ströpellets', price: '2 198.00 kr/pall' },
-    { id: 'varmepellets-6mm', name: 'Värmepellets 6mm', price: '4 198.00 kr/pall' },
-    { id: 'varmepellets-8mm-bulk', name: 'Värmepellets 8mm Bulk', price: '4 548.00 kr/ton' },
-    { id: 'varmepellets-8mm', name: 'Värmepellets 8mm', price: '4 198.00 kr/pall' }
-  ];
-
-  // Shipping costs based on quantity
-  const shippingTiers = [
-    { min: 1, max: 1, label: '1 pall', cost: '1 000.00 kr' },
-    { min: 2, max: 2, label: '2 pallar', cost: '750.00 kr' },
-    { min: 3, max: 3, label: '3 pallar', cost: '500.00 kr' },
-    { min: 4, max: Infinity, label: '4+ pallar', cost: 'Fri frakt' }
+    { id: 'laxa-finspan', name: 'Laxå Finspån', price: '3 598.00 kr/pall', unit: 'pall', unitPlural: 'pallar' },
+    { id: 'laxa-kutterspan', name: 'Laxå Kutterspån', price: '2 698.00 kr/pall', unit: 'pall', unitPlural: 'pallar' },
+    { id: 'storsack-stropellets-8mm', name: 'Storsäck Ströpellets', price: '2 523.00 kr', unit: 'säck', unitPlural: 'säckar' },
+    { id: 'storsack-varmepellets-8mm', name: 'Storsäck Pellets 8mm', price: '2 523.00 kr', unit: 'säck', unitPlural: 'säckar' },
+    { id: 'stropellets-bulk-8mm', name: 'Ströpellets bulk 8mm', price: 'Kontakta oss', unit: 'ton', unitPlural: 'ton' },
+    { id: 'stropellets', name: 'Ströpellets', price: '2 198.00 kr/pall', unit: 'pall', unitPlural: 'pallar' },
+    { id: 'varmepellets-6mm', name: 'Värmepellets 6mm', price: '4 198.00 kr/pall', unit: 'pall', unitPlural: 'pallar' },
+    { id: 'varmepellets-8mm-bulk', name: 'Värmepellets 8mm Bulk', price: '4 548.00 kr/ton', unit: 'ton', unitPlural: 'ton' },
+    { id: 'varmepellets-8mm', name: 'Värmepellets 8mm', price: '4 198.00 kr/pall', unit: 'pall', unitPlural: 'pallar' }
   ];
 
   // Get current product from page
@@ -31,10 +23,40 @@
     return null;
   }
 
-  // Get shipping cost display
-  function getShippingDisplay(quantity) {
-    const tier = shippingTiers.find(t => quantity >= t.min && quantity <= t.max);
-    return tier ? tier.cost : 'Fri frakt';
+  // Generate quantity options based on unit
+  function getQuantityOptions(product) {
+    if (product.unit === 'ton') {
+      return [
+        { value: '5', label: '5 ton' },
+        { value: '10', label: '10 ton' },
+        { value: '15', label: '15 ton' },
+        { value: '20', label: '20 ton' },
+        { value: '25', label: '25 ton' },
+        { value: '30', label: '30+ ton' }
+      ];
+    } else if (product.unit === 'säck') {
+      return [
+        { value: '1', label: '1 säck' },
+        { value: '2', label: '2 säckar' },
+        { value: '3', label: '3 säckar' },
+        { value: '4', label: '4 säckar' },
+        { value: '5', label: '5+ säckar' }
+      ];
+    } else {
+      // Default: pall
+      return [
+        { value: '1', label: '1 pall' },
+        { value: '2', label: '2 pallar' },
+        { value: '3', label: '3 pallar' },
+        { value: '4', label: '4 pallar' },
+        { value: '5', label: '5 pallar' },
+        { value: '6', label: '6 pallar' },
+        { value: '7', label: '7 pallar' },
+        { value: '8', label: '8 pallar' },
+        { value: '9', label: '9 pallar' },
+        { value: '10', label: '10+ pallar' }
+      ];
+    }
   }
 
   // Create modal HTML
@@ -69,35 +91,27 @@
             </div>
             
             <div class="lead-form-group">
-              <label>Välj produkter *</label>
+              <label>Välj produkter och antal *</label>
               <div class="lead-products-list" id="lead-products-list">
-                ${products.map(p => `
-                  <label class="lead-product-item ${currentProduct && currentProduct.id === p.id ? 'selected' : ''}">
-                    <input type="checkbox" name="products" value="${p.id}" ${currentProduct && currentProduct.id === p.id ? 'checked' : ''}>
-                    <span class="lead-product-name">${p.name}</span>
-                    <span class="lead-product-price">${p.price}</span>
-                  </label>
-                `).join('')}
-              </div>
-            </div>
-            
-            <div class="lead-form-group">
-              <label for="lead-quantity">Antal pallar *</label>
-              <select id="lead-quantity" name="quantity" required>
-                <option value="1">1 pall</option>
-                <option value="2">2 pallar</option>
-                <option value="3">3 pallar</option>
-                <option value="4">4 pallar</option>
-                <option value="5">5 pallar</option>
-                <option value="6">6 pallar</option>
-                <option value="7">7 pallar</option>
-                <option value="8">8 pallar</option>
-                <option value="9">9 pallar</option>
-                <option value="10">10+ pallar</option>
-              </select>
-              <div class="lead-shipping-info" id="lead-shipping-info">
-                <span class="shipping-label">Uppskattad frakt:</span>
-                <span class="shipping-cost" id="lead-shipping-cost">1 000.00 kr</span>
+                ${products.map(p => {
+                  const isSelected = currentProduct && currentProduct.id === p.id;
+                  const options = getQuantityOptions(p);
+                  return `
+                  <div class="lead-product-item ${isSelected ? 'selected' : ''}" data-product-id="${p.id}">
+                    <label class="lead-product-checkbox">
+                      <input type="checkbox" name="products" value="${p.id}" ${isSelected ? 'checked' : ''}>
+                      <span class="lead-product-info">
+                        <span class="lead-product-name">${p.name}</span>
+                        <span class="lead-product-price">${p.price}</span>
+                      </span>
+                    </label>
+                    <div class="lead-product-quantity ${isSelected ? 'visible' : ''}">
+                      <select name="quantity-${p.id}" class="lead-quantity-select">
+                        ${options.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('')}
+                      </select>
+                    </div>
+                  </div>
+                `}).join('')}
               </div>
             </div>
             
@@ -118,8 +132,7 @@
     const overlay = document.getElementById('lead-modal-overlay');
     const closeBtn = overlay.querySelector('.lead-modal-close');
     const form = document.getElementById('lead-form');
-    const quantitySelect = document.getElementById('lead-quantity');
-    const productCheckboxes = overlay.querySelectorAll('input[name="products"]');
+    const productItems = overlay.querySelectorAll('.lead-product-item');
     
     // Close modal on overlay click
     overlay.addEventListener('click', function(e) {
@@ -138,16 +151,14 @@
       }
     });
     
-    // Update shipping cost on quantity change
-    quantitySelect.addEventListener('change', function() {
-      const quantity = parseInt(this.value);
-      document.getElementById('lead-shipping-cost').textContent = getShippingDisplay(quantity);
-    });
-    
-    // Toggle selected class on product items
-    productCheckboxes.forEach(checkbox => {
+    // Toggle selected class and quantity visibility on product items
+    productItems.forEach(item => {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      const quantityDiv = item.querySelector('.lead-product-quantity');
+      
       checkbox.addEventListener('change', function() {
-        this.closest('.lead-product-item').classList.toggle('selected', this.checked);
+        item.classList.toggle('selected', this.checked);
+        quantityDiv.classList.toggle('visible', this.checked);
       });
     });
     
@@ -156,24 +167,38 @@
       e.preventDefault();
       
       const formData = new FormData(form);
-      const selectedProducts = Array.from(productCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => products.find(p => p.id === cb.value)?.name)
-        .join(', ');
+      const selectedProducts = [];
       
-      if (!selectedProducts) {
+      productItems.forEach(item => {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        if (checkbox.checked) {
+          const productId = checkbox.value;
+          const product = products.find(p => p.id === productId);
+          const quantity = formData.get(`quantity-${productId}`);
+          selectedProducts.push({
+            name: product.name,
+            quantity: quantity,
+            unit: product.unit
+          });
+        }
+      });
+      
+      if (selectedProducts.length === 0) {
         alert('Vänligen välj minst en produkt.');
         return;
       }
       
+      // Format products for display
+      const productsDisplay = selectedProducts
+        .map(p => `${p.name}: ${p.quantity} ${p.quantity === '1' ? p.unit : products.find(pr => pr.name === p.name)?.unitPlural || p.unit}`)
+        .join(', ');
+      
       // Here you would normally send the data to a server
-      // For now, we'll just show a success message
       const data = {
         firstname: formData.get('firstname'),
         lastname: formData.get('lastname'),
         phone: formData.get('phone'),
         products: selectedProducts,
-        quantity: formData.get('quantity'),
         message: formData.get('message')
       };
       
