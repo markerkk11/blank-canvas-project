@@ -74,17 +74,20 @@
             <div class="lead-form-row">
               <div class="lead-form-group">
                 <label for="lead-firstname">Förnamn *</label>
-                <input type="text" id="lead-firstname" name="firstname" required>
+                <input type="text" id="lead-firstname" name="firstname" required pattern="[A-Za-zÀ-ÿ\\s\\-']+" title="Endast bokstäver tillåtna">
+                <span class="lead-error-message" id="firstname-error"></span>
               </div>
               <div class="lead-form-group">
                 <label for="lead-lastname">Efternamn *</label>
-                <input type="text" id="lead-lastname" name="lastname" required>
+                <input type="text" id="lead-lastname" name="lastname" required pattern="[A-Za-zÀ-ÿ\\s\\-']+" title="Endast bokstäver tillåtna">
+                <span class="lead-error-message" id="lastname-error"></span>
               </div>
             </div>
             
             <div class="lead-form-group">
               <label for="lead-phone">Telefonnummer *</label>
-              <input type="tel" id="lead-phone" name="phone" required>
+              <input type="tel" id="lead-phone" name="phone" required pattern="[0-9\\s\\-\\+()]+" title="Endast siffror tillåtna">
+              <span class="lead-error-message" id="phone-error"></span>
             </div>
             
             <div class="lead-form-group">
@@ -103,7 +106,7 @@
                     </label>
                     <div class="lead-product-quantity ${isSelected ? 'visible' : ''}">
                       <div class="lead-quantity-wrapper">
-                        <input type="number" name="quantity-${p.id}" class="lead-quantity-input" value="1" min="0.1" max="999" step="0.1">
+                        <input type="number" name="quantity-${p.id}" class="lead-quantity-input" value="1" min="1" max="999" step="1">
                         <span class="lead-unit-label">${p.unit}</span>
                       </div>
                     </div>
@@ -165,7 +168,66 @@
         calculateTotal();
       });
       
-      quantityInput.addEventListener('input', calculateTotal);
+      quantityInput.addEventListener('input', function() {
+        // Ensure quantity is at least 1
+        if (parseFloat(this.value) < 1 || this.value === '' || this.value === '0') {
+          this.value = 1;
+        }
+        calculateTotal();
+      });
+    });
+    
+    // Add real-time validation for name fields
+    const firstnameInput = document.getElementById('lead-firstname');
+    const lastnameInput = document.getElementById('lead-lastname');
+    const phoneInput = document.getElementById('lead-phone');
+    
+    function validateName(input, errorId) {
+      const value = input.value;
+      const errorEl = document.getElementById(errorId);
+      const hasNumbers = /[0-9]/.test(value);
+      
+      if (hasNumbers) {
+        errorEl.textContent = 'Siffror är inte tillåtna i namn';
+        input.classList.add('lead-input-error');
+        return false;
+      } else {
+        errorEl.textContent = '';
+        input.classList.remove('lead-input-error');
+        return true;
+      }
+    }
+    
+    function validatePhone(input) {
+      const value = input.value;
+      const errorEl = document.getElementById('phone-error');
+      const hasLetters = /[a-zA-ZÀ-ÿ]/.test(value);
+      
+      if (hasLetters) {
+        errorEl.textContent = 'Endast siffror tillåtna i telefonnummer';
+        input.classList.add('lead-input-error');
+        return false;
+      } else {
+        errorEl.textContent = '';
+        input.classList.remove('lead-input-error');
+        return true;
+      }
+    }
+    
+    // Filter input as user types
+    firstnameInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[0-9]/g, '');
+      validateName(this, 'firstname-error');
+    });
+    
+    lastnameInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[0-9]/g, '');
+      validateName(this, 'lastname-error');
+    });
+    
+    phoneInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[a-zA-ZÀ-ÿ]/g, '');
+      validatePhone(this);
     });
     
     // Calculate initial total if product is pre-selected
