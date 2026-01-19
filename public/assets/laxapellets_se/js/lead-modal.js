@@ -39,7 +39,7 @@
         const productId = checkbox.value;
         const product = products.find(p => p.id === productId);
         const quantityInput = item.querySelector('.lead-quantity-input');
-        let quantity = parseInt(quantityInput.value) || 1;
+        let quantity = parseFloat(quantityInput.value) || 1;
         
         if (product && product.numericPrice) {
           total += product.numericPrice * quantity;
@@ -103,7 +103,7 @@
                     </label>
                     <div class="lead-product-quantity ${isSelected ? 'visible' : ''}">
                       <div class="lead-quantity-wrapper">
-                        <input type="number" name="quantity-${p.id}" class="lead-quantity-input" value="1" min="1" max="999">
+                        <input type="number" name="quantity-${p.id}" class="lead-quantity-input" value="1" min="0.1" max="999" step="0.1">
                         <span class="lead-unit-label">${p.unit}</span>
                       </div>
                     </div>
