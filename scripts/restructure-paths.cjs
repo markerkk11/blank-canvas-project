@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const sourceRoot = path.join(__dirname, '..', 'public', 'assets', 'laxapellets_se');
-const targetRoot = path.join(__dirname, '..', 'public', 'laxapellets_se');
+const targetRoot = path.join(__dirname, '..', 'public'); // HTML files go directly to public/
 
 // Directories that should remain as assets (not converted to pages)
 const assetDirs = ['css', 'js', 'wp-content', 'wp-includes', 'wp-admin', 'assets', 'wp-json'];
@@ -63,16 +63,19 @@ function ensureDir(dirPath) {
 function updateAssetPaths(content, targetPath) {
   let updated = content;
   
-  // Calculate depth from target HTML to public/laxapellets_se/
+  // Calculate depth from target HTML to public/
   const relativeToTarget = path.relative(targetRoot, targetPath);
   const pathParts = relativeToTarget.split(path.sep);
   const depth = pathParts.length - 1; // -1 because the file itself is one level
   
   // Path from HTML file to public/ folder, then to assets/laxapellets_se/
-  // e.g., if file is at laxapellets_se/produkt/laxa-kutterspan.html (depth 1)
+  // e.g., if file is at produkt/laxa-kutterspan.html (depth 1)
   // we need ../assets/laxapellets_se/ to reach assets
-  const upLevels = depth + 1; // +1 to go from laxapellets_se up to public
+  const upLevels = depth + 1; // +1 to go up to public root
   const toAssets = '../'.repeat(upLevels) + 'assets/laxapellets_se/';
+  
+  // For absolute paths, use /assets/laxapellets_se/
+  const absAssets = '/assets/laxapellets_se/';
   
   // Replace various relative path patterns to assets
   // Handle: ../../wp-content, ../wp-content, ./wp-content, wp-content (at start)
@@ -81,53 +84,56 @@ function updateAssetPaths(content, targetPath) {
   for (const folder of assetFolders) {
     // Match patterns like href="../../wp-content/ or src='../wp-content/
     const relativePattern = new RegExp(`(href|src|content)=(["'])((?:\\.\\.\\/)+)${folder}\\/`, 'g');
-    updated = updated.replace(relativePattern, `$1=$2${toAssets}${folder}/`);
+    updated = updated.replace(relativePattern, `$1=$2${absAssets}${folder}/`);
     
     // Match patterns starting with just the folder name (no ../)
     const directPattern = new RegExp(`(href|src)=(["'])${folder}\\/`, 'g');
-    updated = updated.replace(directPattern, `$1=$2${toAssets}${folder}/`);
+    updated = updated.replace(directPattern, `$1=$2${absAssets}${folder}/`);
     
     // Match url() in styles
     const urlPattern = new RegExp(`url\\((["']?)((?:\\.\\.\\/)+)${folder}\\/`, 'g');
-    updated = updated.replace(urlPattern, `url($1${toAssets}${folder}/`);
+    updated = updated.replace(urlPattern, `url($1${absAssets}${folder}/`);
   }
   
-  // Fix internal page links
-  // Pattern: href="/produkt/laxa-kutterspan/" -> href="/laxapellets_se/produkt/laxa-kutterspan.html"
+  // Fix internal page links - now without /laxapellets_se/ prefix
+  // Pattern: href="/produkt/laxa-kutterspan/" -> href="/produkt/laxa-kutterspan.html"
   // But keep external links and asset links
-  updated = updated.replace(/href=(["'])\/(?!assets\/|laxapellets_se\/|http|#)([^"']*?)\/(["'])/g, (match, q1, pagePath, q2) => {
+  updated = updated.replace(/href=(["'])\/(?!assets\/|http|#)([^"']*?)\/(["'])/g, (match, q1, pagePath, q2) => {
     const cleanPath = pagePath.replace(/\/$/, '');
-    if (!cleanPath) return `href=${q1}/laxapellets_se/index.html${q2}`;
-    return `href=${q1}/laxapellets_se/${cleanPath}.html${q2}`;
+    if (!cleanPath) return `href=${q1}/index.html${q2}`;
+    return `href=${q1}/${cleanPath}.html${q2}`;
   });
   
   // Pattern: href="/produkt/laxa-kutterspan" (no trailing slash)
-  updated = updated.replace(/href=(["'])\/(?!assets\/|laxapellets_se\/|http|#)([a-zA-Z0-9\-_\/]+)(["'])/g, (match, q1, pagePath, q2) => {
+  updated = updated.replace(/href=(["'])\/(?!assets\/|http|#)([a-zA-Z0-9\-_\/]+)(["'])/g, (match, q1, pagePath, q2) => {
     // Skip if already has extension
     if (/\.(html|css|js|jpg|jpeg|png|webp|svg|gif|pdf|xml|json)$/i.test(pagePath)) {
       return match;
     }
     const cleanPath = pagePath.replace(/\/$/, '');
-    return `href=${q1}/laxapellets_se/${cleanPath}.html${q2}`;
+    return `href=${q1}/${cleanPath}.html${q2}`;
   });
   
-  // Fix root link "/" to go to /laxapellets_se/
-  updated = updated.replace(/href=(["'])\/(["'])/g, `href=$1/laxapellets_se/index.html$2`);
+  // Fix root link "/" to go to /index.html
+  updated = updated.replace(/href=(["'])\/(["'])/g, `href=$1/index.html$2`);
   
   // Fix breadcrumb and other links with single quotes too
-  updated = updated.replace(/href='\/(?!assets\/|laxapellets_se\/|http|#)([^']*?)\/'/g, (match, pagePath) => {
+  updated = updated.replace(/href='\/(?!assets\/|http|#)([^']*?)\/'/g, (match, pagePath) => {
     const cleanPath = pagePath.replace(/\/$/, '');
-    if (!cleanPath) return `href='/laxapellets_se/index.html'`;
-    return `href='/laxapellets_se/${cleanPath}.html'`;
+    if (!cleanPath) return `href='/index.html'`;
+    return `href='/${cleanPath}.html'`;
   });
   
-  updated = updated.replace(/href='\/(?!assets\/|laxapellets_se\/|http|#)([a-zA-Z0-9\-_\/]+)'/g, (match, pagePath) => {
+  updated = updated.replace(/href='\/(?!assets\/|http|#)([a-zA-Z0-9\-_\/]+)'/g, (match, pagePath) => {
     if (/\.(html|css|js|jpg|jpeg|png|webp|svg|gif|pdf|xml|json)$/i.test(pagePath)) {
       return match;
     }
     const cleanPath = pagePath.replace(/\/$/, '');
-    return `href='/laxapellets_se/${cleanPath}.html'`;
+    return `href='/${cleanPath}.html'`;
   });
+  
+  // Remove any /laxapellets_se/ prefix from links (cleanup)
+  updated = updated.replace(/href=(["'])\/laxapellets_se\//g, `href=$1/`);
   
   return updated;
 }
@@ -193,12 +199,12 @@ function processFiles() {
   
   console.log(`\n✓ Processed ${processedCount} HTML files.`);
   console.log(`\nNew structure:`);
-  console.log(`  Pages: public/laxapellets_se/`);
+  console.log(`  Pages: public/ (e.g., /produkt/laxa-kutterspan.html)`);
   console.log(`  Assets: public/assets/laxapellets_se/`);
   console.log(`\nExample URLs:`);
-  console.log(`  /laxapellets_se/index.html (home)`);
-  console.log(`  /laxapellets_se/produkt/laxa-kutterspan.html`);
-  console.log(`  /laxapellets_se/vara-produkter.html`);
+  console.log(`  /index.html (home)`);
+  console.log(`  /produkt/laxa-kutterspan.html`);
+  console.log(`  /vara-produkter.html`);
 }
 
 processFiles();
