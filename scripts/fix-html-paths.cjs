@@ -16,7 +16,7 @@ const regexReplacements = [
     replace: ''
   },
   {
-    // Replace login_to_buy div with lead modal button (same style as buy-request-container)
+    // Replace login_to_buy div with lead modal button
     pattern: /<div id="login_to_buy">[\s\S]*?<\/div>\s*<\/div>/g,
     replace: `<div class="buy-request-container" style="margin-top: 20px;">
 						<button type="button" class="button button-primary" onclick="if(window.openLeadModal) window.openLeadModal();" style="width: 100%; padding: 15px 30px; font-size: 18px; font-weight: bold; background-color: #1d525c; color: white; border: none; border-radius: 5px; cursor: pointer;">
@@ -25,14 +25,24 @@ const regexReplacements = [
 					</div>`
   },
   {
-    // Fix FAQ link (broken /kundtjanst path)
-    pattern: /<a href="\/kundtjanst"/g,
-    replace: '<a href="/assets/laxapellets_se/laxa-pellets-kundtjanst/.html"'
+    // Fix paths: folder/.html → folder.html
+    pattern: /href="([^"]*?)\/\.html"/g,
+    replace: 'href="$1.html"'
   },
   {
-    // Fix Leveransvillkor link (broken /kopvillkor path)
+    // Fix relative paths: ../folder/.html → ../folder.html
+    pattern: /href="(\.\.\/[^"]*?)\/\.html"/g,
+    replace: 'href="$1.html"'
+  },
+  {
+    // Fix FAQ link
+    pattern: /<a href="\/kundtjanst"/g,
+    replace: '<a href="/assets/laxapellets_se/laxa-pellets-kundtjanst.html"'
+  },
+  {
+    // Fix Leveransvillkor link
     pattern: /<a href="\/kopvillkor"/g,
-    replace: '<a href="/assets/laxapellets_se/kopvillkor/.html"'
+    replace: '<a href="/assets/laxapellets_se/kopvillkor.html"'
   },
   {
     // Remove breadcrumbs
