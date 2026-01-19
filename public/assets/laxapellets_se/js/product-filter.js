@@ -35,7 +35,10 @@
     
     // Filter functionality
     filterButtons.forEach(function(button) {
-      button.addEventListener('click', function() {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
         const filter = this.getAttribute('data-filter');
         
         // Update active state
@@ -54,6 +57,17 @@
             product.style.display = 'none';
           }
         });
+        
+        // Remove any loading spinner that might have been triggered
+        const spinner = document.querySelector('.spinner');
+        if (spinner) {
+          spinner.classList.remove('submitting');
+        }
+        
+        // Also unblock any jQuery blockUI if present
+        if (typeof jQuery !== 'undefined' && jQuery.fn.unblock) {
+          jQuery('.product_wrapper').unblock();
+        }
       });
     });
     
