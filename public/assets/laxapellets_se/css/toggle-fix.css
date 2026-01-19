@@ -1,0 +1,12 @@
+/* Toggle navigation button position fix */
+@media only screen and (max-width: 1024px) {
+  #toggle_navigation {
+    right: 24px !important;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  #toggle_navigation {
+    right: 4px !important;
+  }
+}
