@@ -21,12 +21,22 @@ const regexReplacements = [
     replace: 'href="/laxapellets_se/vara-produkter/.html"'
   },
   {
-    // Redirect breadcrumb Ströprodukter links to vara-produkter
+    // Redirect breadcrumb Ströprodukter links to vara-produkter (single quotes)
+    pattern: /href='\/stroprodukter'/g,
+    replace: "href='/laxapellets_se/vara-produkter/.html'"
+  },
+  {
+    // Redirect breadcrumb Värmepellets links to vara-produkter (single quotes)
+    pattern: /href='\/varmepellets'/g,
+    replace: "href='/laxapellets_se/vara-produkter/.html'"
+  },
+  {
+    // Redirect breadcrumb Ströprodukter links to vara-produkter (double quotes)
     pattern: /href="\/stroprodukter"/g,
     replace: 'href="/laxapellets_se/vara-produkter/.html"'
   },
   {
-    // Redirect breadcrumb Värmepellets links to vara-produkter
+    // Redirect breadcrumb Värmepellets links to vara-produkter (double quotes)
     pattern: /href="\/varmepellets"/g,
     replace: 'href="/laxapellets_se/vara-produkter/.html"'
   },
