@@ -357,7 +357,43 @@
   window.startNewOrder = startNewOrder;
   
   // Initialize - attach click handlers to buy request buttons
+  // + also normalize broken category links (static export quirk: category entry file is "/.html")
   document.addEventListener('DOMContentLoaded', function() {
+    // Fix broken category links site-wide
+    try {
+      const normalizeCategoryHref = (href) => {
+        if (!href) return href;
+
+        // Normalize missing /.html entry
+        if (href === '/assets/laxapellets_se/varmepellets' || href === '/assets/laxapellets_se/varmepellets/') {
+          return '/assets/laxapellets_se/varmepellets/.html';
+        }
+        if (href === '/assets/laxapellets_se/stroprodukter' || href === '/assets/laxapellets_se/stroprodukter/') {
+          return '/assets/laxapellets_se/stroprodukter/.html';
+        }
+
+        return href;
+      };
+
+      document.querySelectorAll('a[href]')?.forEach((a) => {
+        const href = a.getAttribute('href');
+
+        // Menu/footer links incorrectly pointing to generic product listing
+        const text = (a.textContent || '').replace(/\s+/g, ' ').trim();
+        if (href === '/assets/laxapellets_se/vara-produkter/.html') {
+          if (text === 'Värmepellets') a.setAttribute('href', '/assets/laxapellets_se/varmepellets/.html');
+          if (text === 'Ströprodukter') a.setAttribute('href', '/assets/laxapellets_se/stroprodukter/.html');
+        }
+
+        // Direct category hrefs missing /.html
+        const normalized = normalizeCategoryHref(href);
+        if (normalized !== href) a.setAttribute('href', normalized);
+      });
+    } catch (e) {
+      // never block other scripts
+      console.warn('[lead-modal] link-normalizer failed', e);
+    }
+
     const buyButtons = document.querySelectorAll('.buy-request-container button');
     buyButtons.forEach(btn => {
       btn.addEventListener('click', openModal);
