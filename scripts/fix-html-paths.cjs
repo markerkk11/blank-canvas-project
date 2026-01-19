@@ -42,8 +42,21 @@ const regexReplacements = [
     // Remove login link
     pattern: /<a[^>]*class="login_item"[^>]*>[\s\S]*?<\/a>/g,
     replace: ''
+  },
+  {
+    // Replace login_to_buy div with buy request button
+    pattern: /<div id="login_to_buy">[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/g,
+    replace: `<div class="buy-request-container" style="margin-top: 20px;">
+						<button type="button" class="button button-primary buy-request-btn" style="width: 100%; padding: 15px 30px; font-size: 18px; font-weight: bold; background-color: #1d525c; color: white; border: none; border-radius: 5px; cursor: pointer;">
+							Skicka köpförfrågan
+						</button>
+					</div>`
   }
 ];
+
+// CSS and JS includes for lead modal
+const leadModalCSS = '<link rel="stylesheet" href="../../css/lead-modal.css" />';
+const leadModalJS = '<script src="../../js/lead-modal.js"></script>';
 
 function findHtmlFiles(dir, files = []) {
   const items = fs.readdirSync(dir);
@@ -60,6 +73,10 @@ function findHtmlFiles(dir, files = []) {
   }
   
   return files;
+}
+
+function isProductPage(filePath) {
+  return filePath.includes('/produkt/');
 }
 
 function fixFile(filePath) {
@@ -79,6 +96,21 @@ function fixFile(filePath) {
     const newContent = content.replace(pattern, replace);
     if (newContent !== content) {
       content = newContent;
+      modified = true;
+    }
+  }
+  
+  // Add lead modal CSS and JS to product pages
+  if (isProductPage(filePath)) {
+    // Add CSS before </head> if not already present
+    if (!content.includes('lead-modal.css')) {
+      content = content.replace('</head>', `${leadModalCSS}\n</head>`);
+      modified = true;
+    }
+    
+    // Add JS before </body> if not already present
+    if (!content.includes('lead-modal.js')) {
+      content = content.replace('</body>', `${leadModalJS}\n</body>`);
       modified = true;
     }
   }
