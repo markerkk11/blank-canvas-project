@@ -11,6 +11,16 @@ const regexReplacements = [
     replace: '<a href="/">'
   },
   {
+    // Redirect Ströprodukter links to vara-produkter
+    pattern: /href="[^"]*stroprodukter\/\.html"/g,
+    replace: 'href="/laxapellets_se/vara-produkter/.html"'
+  },
+  {
+    // Redirect Värmepellets links to vara-produkter
+    pattern: /href="[^"]*varmepellets\/\.html"/g,
+    replace: 'href="/laxapellets_se/vara-produkter/.html"'
+  },
+  {
     // Remove mobile "Skapa konto" navigation
     pattern: /<nav id="mob_user_nav"[^>]*>[\s\S]*?<\/nav>/g,
     replace: ''
