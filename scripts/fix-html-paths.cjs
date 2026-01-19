@@ -23,6 +23,21 @@ const regexReplacements = [
 							Skicka köpförfrågan
 						</button>
 					</div>`
+  },
+  {
+    // Fix FAQ link (broken /kundtjanst path)
+    pattern: /<a href="\/kundtjanst"/g,
+    replace: '<a href="/assets/laxapellets_se/laxa-pellets-kundtjanst/.html"'
+  },
+  {
+    // Fix Leveransvillkor link (broken /kopvillkor path)
+    pattern: /<a href="\/kopvillkor"/g,
+    replace: '<a href="/assets/laxapellets_se/kopvillkor/.html"'
+  },
+  {
+    // Remove breadcrumbs
+    pattern: /<div id="breadcrumbs">[\s\S]*?<\/div>\s*<\/div>\s*/g,
+    replace: ''
   }
 ];
 
