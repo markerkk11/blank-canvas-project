@@ -168,10 +168,16 @@
         calculateTotal();
       });
       
+      // Update total on input (allow empty while typing)
       quantityInput.addEventListener('input', function() {
-        // Ensure quantity is at least 0.1
-        if (parseFloat(this.value) < 0.1 || this.value === '' || this.value === '0') {
-          this.value = 0.1;
+        calculateTotal();
+      });
+      
+      // Validate minimum on blur (when user leaves the field)
+      quantityInput.addEventListener('blur', function() {
+        const val = parseFloat(this.value);
+        if (isNaN(val) || val < 0.1) {
+          this.value = 1;
         }
         calculateTotal();
       });
