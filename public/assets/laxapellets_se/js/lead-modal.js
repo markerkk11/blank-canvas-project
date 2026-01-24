@@ -2,15 +2,15 @@
 (function() {
   // Available products list with units and numeric prices
   const products = [
-    { id: 'laxa-finspan', name: 'Laxå Finspån', price: '3 598.00 kr/pall', numericPrice: 3598, unit: 'pall', unitPlural: 'pallar' },
-    { id: 'laxa-kutterspan', name: 'Laxå Kutterspån', price: '2 698.00 kr/pall', numericPrice: 2698, unit: 'pall', unitPlural: 'pallar' },
-    { id: 'storsack-stropellets-8mm', name: 'Storsäck Ströpellets', price: '2 523.00 kr/st', numericPrice: 2523, unit: 'säck', unitPlural: 'säckar' },
-    { id: 'storsack-varmepellets-8mm', name: 'Storsäck Pellets 8mm', price: '2 523.00 kr/st', numericPrice: 2523, unit: 'säck', unitPlural: 'säckar' },
-    { id: 'stropellets-bulk-8mm', name: 'Ströpellets bulk 8mm', price: '4 548.00 kr/ton', numericPrice: 4548, unit: 'ton', unitPlural: 'ton' },
-    { id: 'stropellets', name: 'Ströpellets', price: '2 198.00 kr/pall', numericPrice: 2198, unit: 'pall', unitPlural: 'pallar' },
-    { id: 'varmepellets-6mm', name: 'Värmepellets 6mm', price: '4 198.00 kr/pall', numericPrice: 4198, unit: 'pall', unitPlural: 'pallar' },
-    { id: 'varmepellets-8mm-bulk', name: 'Värmepellets 8mm Bulk', price: '4 548.00 kr/ton', numericPrice: 4548, unit: 'ton', unitPlural: 'ton' },
-    { id: 'varmepellets-8mm', name: 'Värmepellets 8mm', price: '4 198.00 kr/pall', numericPrice: 4198, unit: 'pall', unitPlural: 'pallar' }
+    { id: 'laxa-finspan', name: 'Laxå Finspån', price: '2 450.00 kr/pall', numericPrice: 2450, unit: 'pall', unitPlural: 'pallar' },
+    { id: 'laxa-kutterspan', name: 'Laxå Kutterspån', price: '1 820.00 kr/pall', numericPrice: 1820, unit: 'pall', unitPlural: 'pallar' },
+    { id: 'storsack-stropellets-8mm', name: 'Storsäck Ströpellets', price: '1 770.00 kr/st', numericPrice: 1770, unit: 'säck', unitPlural: 'säckar' },
+    { id: 'storsack-varmepellets-8mm', name: 'Storsäck Pellets 8mm', price: '1 770.00 kr/st', numericPrice: 1770, unit: 'säck', unitPlural: 'säckar' },
+    { id: 'stropellets-bulk-8mm', name: 'Ströpellets bulk 8mm', price: '3 180.00 kr/ton', numericPrice: 3180, unit: 'ton', unitPlural: 'ton' },
+    { id: 'stropellets', name: 'Ströpellets', price: '2 800.00 kr/pall', numericPrice: 2800, unit: 'pall', unitPlural: 'pallar' },
+    { id: 'varmepellets-6mm', name: 'Värmepellets 6mm', price: '2 940.00 kr/pall', numericPrice: 2940, unit: 'pall', unitPlural: 'pallar' },
+    { id: 'varmepellets-8mm-bulk', name: 'Värmepellets 8mm Bulk', price: '3 180.00 kr/ton', numericPrice: 3180, unit: 'ton', unitPlural: 'ton' },
+    { id: 'varmepellets-8mm', name: 'Värmepellets 8mm', price: '2 940.00 kr/pall', numericPrice: 2940, unit: 'pall', unitPlural: 'pallar' }
   ];
 
   // Get current product from page
