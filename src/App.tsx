@@ -11,6 +11,7 @@ import VarmepelletsPage from "./pages/VarmepelletsPage";
 import StroprodukterPage from "./pages/StroprodukterPage";
 import CustomerServicePage from "./pages/CustomerServicePage";
 import AboutPage from "./pages/AboutPage";
+import ThankYouPage from "./pages/ThankYouPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/om-oss" element={<AboutPage />} />
             <Route path="/aterforsaljare" element={<AboutPage />} />
             <Route path="/offert" element={<CustomerServicePage />} />
+            <Route path="/tack" element={<ThankYouPage />} />
             <Route path="/aktuellt" element={<AboutPage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
