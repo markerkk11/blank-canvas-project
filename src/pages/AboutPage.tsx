@@ -7,7 +7,7 @@ export default function AboutPage() {
       {/* Page Header */}
       <section className="bg-gradient-to-r from-primary to-[hsl(var(--bay))] text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold">Om Laxå Pellets</h1>
+          <h1 className="text-4xl md:text-5xl font-bold">Om Nord Pellets</h1>
         </div>
       </section>
 
@@ -17,7 +17,7 @@ export default function AboutPage() {
           <div className="max-w-4xl mx-auto">
             <div className="prose prose-lg max-w-none">
               <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-                Laxå Pellets har i över 20 år levererat högkvalitativa pellets och 
+                Nord Pellets har i över 20 år levererat högkvalitativa pellets och 
                 ströprodukter till privatkunder och företag i hela Sverige. Vi är 
                 stolta över vår svenska produktion och vårt engagemang för hållbarhet.
               </p>
@@ -71,7 +71,7 @@ export default function AboutPage() {
 
               <h2 className="text-2xl font-bold mt-12 mb-4">Vår historia</h2>
               <p className="text-muted-foreground mb-6">
-                Sedan starten har Laxå Pellets vuxit från en liten lokal producent 
+                Sedan starten har Nord Pellets vuxit från en liten lokal producent 
                 till en av Sveriges ledande leverantörer av pellets och ströprodukter. 
                 Vår framgång bygger på ett starkt engagemang för kvalitet, 
                 kundnöjdhet och hållbar produktion.
