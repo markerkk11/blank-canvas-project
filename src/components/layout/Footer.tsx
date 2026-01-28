@@ -27,7 +27,7 @@ export function Footer() {
           {/* Company Info */}
           <div>
             <Link to="/" className="inline-block mb-6">
-              <img src={nordLogo} alt="Nord Pellets" className="h-16" />
+              <img src={nordLogo} alt="Nord Pellets" className="h-20" />
             </Link>
             <div className="space-y-2 text-white/80">
               <p className="font-semibold text-white">Nord Pellets AB</p>

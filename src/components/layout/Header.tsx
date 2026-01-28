@@ -62,7 +62,7 @@ export function Header() {
             <img 
               src={nordLogo} 
               alt="Nord Pellets" 
-              className="h-12 md:h-14"
+              className="h-16 md:h-20"
             />
           </Link>
 
