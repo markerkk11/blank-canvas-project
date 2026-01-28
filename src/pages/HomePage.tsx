@@ -10,7 +10,7 @@ import heroBanner from '@/assets/hero-banner.jpg';
 import varmepellets6mm from '@/assets/products/varmepellets-6mm.webp';
 import varmepellets8mm from '@/assets/products/varmepellets-8mm.webp';
 import stropellets from '@/assets/products/stropellets.webp';
-import finspan from '@/assets/products/laxa-finspan.webp';
+import finspan from '@/assets/products/nord-finspan.webp';
 const featuredProducts = products.slice(0, 4);
 const categories = [{
   name: 'Värmepellets',
@@ -41,7 +41,7 @@ export default function HomePage() {
         
         <div className="relative container mx-auto px-4 text-white">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-            Laxå värmepellets och ströprodukter
+            Nord värmepellets och ströprodukter
           </h1>
           <p className="text-xl md:text-2xl mb-2 opacity-90">
             Webbshop för privat och företagskunder
@@ -113,7 +113,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Varför välja Laxå Pellets?
+              Varför välja Nord Pellets?
             </h2>
             <div className="grid md:grid-cols-3 gap-8 mt-10">
               <div>

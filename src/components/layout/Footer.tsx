@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Linkedin, Phone, Mail, MapPin } from 'lucide-react';
-import logoLight from '@/assets/logo-light.svg';
+import nordLogo from '@/assets/logo-nord-pellets.png';
 
 const footerLinks = {
   products: [
     { label: 'Värmepellets', href: '/varmepellets' },
     { label: 'Ströprodukter', href: '/stroprodukter' },
     { label: 'Återförsäljare', href: '/aterforsaljare' },
-    { label: 'Om Laxå Pellets', href: '/om-oss' },
+    { label: 'Om Nord Pellets', href: '/om-oss' },
     { label: 'Kundtjänst', href: '/kundtjanst' },
-    { label: 'Aktuellt från Laxå Pellets', href: '/aktuellt' },
+    { label: 'Aktuellt från Nord Pellets', href: '/aktuellt' },
     { label: 'Jobba hos oss', href: '/jobb' },
   ],
   legal: [
@@ -27,22 +27,22 @@ export function Footer() {
           {/* Company Info */}
           <div>
             <Link to="/" className="inline-block mb-6">
-              <img src={logoLight} alt="Laxå Pellets" className="h-16" />
+              <img src={nordLogo} alt="Nord Pellets" className="h-16" />
             </Link>
             <div className="space-y-2 text-white/80">
-              <p className="font-semibold text-white">Laxå Pellets AB</p>
+              <p className="font-semibold text-white">Nord Pellets AB</p>
               <p>Org.nr: 556647-9969</p>
             </div>
             <a 
-              href="mailto:order@laxapellets.se" 
+              href="mailto:order@nordpellets.se" 
               className="inline-flex items-center gap-2 mt-4 text-white hover:text-accent transition-colors"
             >
               <Mail className="w-4 h-4" />
-              order@laxapellets.se
+              order@nordpellets.se
             </a>
             <div className="flex gap-4 mt-6">
               <a 
-                href="https://facebook.com/laxapellets" 
+                href="https://facebook.com/nordpellets" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
@@ -51,7 +51,7 @@ export function Footer() {
                 <Facebook className="w-5 h-5" />
               </a>
               <a 
-                href="https://instagram.com/laxapellets" 
+                href="https://instagram.com/nordpellets" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
@@ -60,7 +60,7 @@ export function Footer() {
                 <Instagram className="w-5 h-5" />
               </a>
               <a 
-                href="https://linkedin.com/company/laxa-pellets" 
+                href="https://linkedin.com/company/nord-pellets" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
@@ -122,10 +122,10 @@ export function Footer() {
                 </a>
               </div>
               <a 
-                href="mailto:order@laxapellets.se"
+                href="mailto:order@nordpellets.se"
                 className="text-accent hover:underline"
               >
-                order@laxapellets.se
+                order@nordpellets.se
               </a>
               <div className="pt-4 border-t border-white/20 space-y-2 text-sm text-white/80">
                 <div className="flex justify-between">
@@ -150,7 +150,7 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="container mx-auto px-4 py-4">
           <p className="text-center text-sm text-white/60">
-            © Laxå Pellets {new Date().getFullYear()}
+            © Nord Pellets {new Date().getFullYear()}
           </p>
         </div>
       </div>

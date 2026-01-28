@@ -41,10 +41,10 @@ export default function CustomerServicePage() {
                   <div>
                     <h3 className="font-semibold mb-1">E-post</h3>
                     <a 
-                      href="mailto:order@laxapellets.se" 
+                      href="mailto:order@nordpellets.se" 
                       className="text-lg text-primary hover:underline"
                     >
-                      order@laxapellets.se
+                      order@nordpellets.se
                     </a>
                   </div>
                 </div>
@@ -81,7 +81,7 @@ export default function CustomerServicePage() {
                   <div>
                     <h3 className="font-semibold mb-1">Adress</h3>
                     <p className="text-muted-foreground">
-                      Laxå Pellets AB<br />
+                      Nord Pellets AB<br />
                       Org.nr: 556647-9969
                     </p>
                   </div>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
-import logoDark from '@/assets/logo-dark.svg';
+import nordLogo from '@/assets/logo-nord-pellets.png';
 
 const mainNavItems = [
   { label: 'Våra produkter', href: '/produkter' },
@@ -11,18 +11,18 @@ const mainNavItems = [
     href: '/stroprodukter',
     submenu: [
       { label: 'Ströpellets', href: '/produkt/stropellets' },
-      { label: 'Kutterspån', href: '/produkt/laxa-kutterspan' },
-      { label: 'Finspån', href: '/produkt/laxa-finspan' },
+      { label: 'Kutterspån', href: '/produkt/nord-kutterspan' },
+      { label: 'Finspån', href: '/produkt/nord-finspan' },
     ]
   },
   { label: 'Återförsäljare', href: '/aterforsaljare' },
-  { label: 'Om Laxå Pellets', href: '/om-oss' },
+  { label: 'Om Nord Pellets', href: '/om-oss' },
 ];
 
 const topNavItems = [
   { label: 'Kundtjänst', href: '/kundtjanst' },
   { label: 'Offert företag/föreningar', href: '/offert' },
-  { label: 'Aktuellt från Laxå Pellets', href: '/aktuellt' },
+  { label: 'Aktuellt från Nord Pellets', href: '/aktuellt' },
 ];
 
 export function Header() {
@@ -60,8 +60,8 @@ export function Header() {
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <img 
-              src={logoDark} 
-              alt="Laxå Pellets" 
+              src={nordLogo} 
+              alt="Nord Pellets" 
               className="h-12 md:h-14"
             />
           </Link>
