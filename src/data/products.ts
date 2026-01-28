@@ -26,7 +26,7 @@ export const products: Product[] = [
     price: 2940,
     unit: 'pall',
     unitPlural: 'pallar',
-    image: '/src/assets/products/varmepellets-6mm.webp',
+    image: '/products/varmepellets-6mm.webp',
     description: 'Högkvalitativa värmepellets 6mm för effektiv uppvärmning. Tillverkade av rent trä utan tillsatser.',
     specs: {
       shipping: 'Pall',
@@ -43,7 +43,7 @@ export const products: Product[] = [
     price: 2940,
     unit: 'pall',
     unitPlural: 'pallar',
-    image: '/src/assets/products/varmepellets-8mm.webp',
+    image: '/products/varmepellets-8mm.webp',
     description: 'Högkvalitativa värmepellets 8mm för effektiv uppvärmning. Tillverkade av rent trä utan tillsatser.',
     specs: {
       shipping: 'Pall',
@@ -60,7 +60,7 @@ export const products: Product[] = [
     price: 3180,
     unit: 'ton',
     unitPlural: 'ton',
-    image: '/src/assets/products/varmepellets-8mm-bulk.webp',
+    image: '/products/varmepellets-8mm-bulk.webp',
     description: 'Värmepellets 8mm i bulk för storskalig uppvärmning. Levereras löst direkt till din anläggning.',
     specs: {
       shipping: 'Bulk',
@@ -76,7 +76,7 @@ export const products: Product[] = [
     price: 2800,
     unit: 'pall',
     unitPlural: 'pallar',
-    image: '/src/assets/products/stropellets.webp',
+    image: '/products/stropellets.webp',
     description: 'Premium ströpellets för djurhållning. Extremt absorberande och dammfritt.',
     specs: {
       shipping: 'Pall',
@@ -92,7 +92,7 @@ export const products: Product[] = [
     price: 1770,
     unit: 'säck',
     unitPlural: 'säckar',
-    image: '/src/assets/products/storsack.webp',
+    image: '/products/storsack.webp',
     description: 'Ströpellets i praktisk storsäck om 500 kg. Perfekt för större djurhållare.',
     specs: {
       shipping: 'Storsäck',
@@ -109,7 +109,7 @@ export const products: Product[] = [
     price: 1770,
     unit: 'säck',
     unitPlural: 'säckar',
-    image: '/src/assets/products/storsack.webp',
+    image: '/products/storsack.webp',
     description: 'Värmepellets 8mm i praktisk storsäck om 500 kg.',
     specs: {
       shipping: 'Storsäck',
@@ -126,7 +126,7 @@ export const products: Product[] = [
     price: 2450,
     unit: 'pall',
     unitPlural: 'pallar',
-    image: '/src/assets/products/nord-finspan.webp',
+    image: '/products/nord-finspan.webp',
     description: 'Finspån av hög kvalitet för djurhållning. Mjukt och bekvämt för djuren.',
     specs: {
       shipping: 'Pall',
@@ -142,7 +142,7 @@ export const products: Product[] = [
     price: 1820,
     unit: 'pall',
     unitPlural: 'pallar',
-    image: '/src/assets/products/nord-kutterspan.webp',
+    image: '/products/nord-kutterspan.webp',
     description: 'Kutterspån för djurhållning. Naturligt och absorberande strömaterial.',
     specs: {
       shipping: 'Pall',
