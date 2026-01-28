@@ -11,41 +11,31 @@ import varmepellets6mm from '@/assets/products/varmepellets-6mm.webp';
 import varmepellets8mm from '@/assets/products/varmepellets-8mm.webp';
 import stropellets from '@/assets/products/stropellets.webp';
 import finspan from '@/assets/products/laxa-finspan.webp';
-
 const featuredProducts = products.slice(0, 4);
-
-const categories = [
-  {
-    name: 'Värmepellets',
-    description: 'Högkvalitativa pellets för effektiv uppvärmning',
-    href: '/varmepellets',
-    image: varmepellets6mm,
-  },
-  {
-    name: 'Ströprodukter',
-    description: 'Premium strömaterial för djurhållning',
-    href: '/stroprodukter',
-    image: stropellets,
-  },
-];
-
+const categories = [{
+  name: 'Värmepellets',
+  description: 'Högkvalitativa pellets för effektiv uppvärmning',
+  href: '/varmepellets',
+  image: varmepellets6mm
+}, {
+  name: 'Ströprodukter',
+  description: 'Premium strömaterial för djurhållning',
+  href: '/stroprodukter',
+  image: stropellets
+}];
 export default function HomePage() {
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
   const handleBuyClick = (product: Product) => {
     setSelectedProduct(product);
     setIsLeadModalOpen(true);
   };
-
-  return (
-    <div>
+  return <div>
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[400px] flex items-center">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${heroBanner})` }}
-        >
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
+        backgroundImage: `url(${heroBanner})`
+      }}>
           <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/40" />
         </div>
         
@@ -56,17 +46,14 @@ export default function HomePage() {
           <p className="text-xl md:text-2xl mb-2 opacity-90">
             Webbshop för privat och företagskunder
           </p>
-          <p className="text-2xl md:text-3xl font-semibold text-accent">
+          <p className="text-2xl md:text-3xl font-semibold text-primary-foreground">
             Det naturliga valet!
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link to="/produkter" className="btn-primary bg-white text-primary hover:bg-white/90">
               Se våra produkter
             </Link>
-            <button 
-              onClick={() => setIsLeadModalOpen(true)}
-              className="btn-outline border-white text-white hover:bg-white hover:text-primary"
-            >
+            <button onClick={() => setIsLeadModalOpen(true)} className="btn-outline border-white text-white hover:bg-white hover:text-primary">
               Begär offert
             </button>
           </div>
@@ -77,18 +64,9 @@ export default function HomePage() {
       <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8">
-            {categories.map((category) => (
-              <Link
-                key={category.name}
-                to={category.href}
-                className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-xl transition-shadow"
-              >
+            {categories.map(category => <Link key={category.name} to={category.href} className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-xl transition-shadow">
                 <div className="aspect-[16/9] overflow-hidden">
-                  <img
-                    src={category.image}
-                    alt={category.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                  <img src={category.image} alt={category.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 </div>
                 <div className="p-6">
                   <h2 className="text-2xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
@@ -100,8 +78,7 @@ export default function HomePage() {
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </div>
-              </Link>
-            ))}
+              </Link>)}
           </div>
         </div>
       </section>
@@ -119,13 +96,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onBuyClick={handleBuyClick}
-              />
-            ))}
+            {featuredProducts.map(product => <ProductCard key={product.id} product={product} onBuyClick={handleBuyClick} />)}
           </div>
 
           <div className="text-center mt-10">
@@ -179,14 +150,9 @@ export default function HomePage() {
       </section>
 
       {/* Lead Modal */}
-      <LeadModal
-        isOpen={isLeadModalOpen}
-        onClose={() => {
-          setIsLeadModalOpen(false);
-          setSelectedProduct(null);
-        }}
-        preselectedProduct={selectedProduct}
-      />
-    </div>
-  );
+      <LeadModal isOpen={isLeadModalOpen} onClose={() => {
+      setIsLeadModalOpen(false);
+      setSelectedProduct(null);
+    }} preselectedProduct={selectedProduct} />
+    </div>;
 }
