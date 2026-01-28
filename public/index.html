@@ -3,6 +3,41 @@
 <link rel="stylesheet" href="css/extracted_styles.css" />
 <link rel="stylesheet" href="css/toggle-fix.css" />
 <link rel="stylesheet" href="css/lead-modal.css" />
+	<script>
+		// Normalize legacy paths that still contain "assets/laxapellets_se/".
+		// This keeps old exported HTML working after the folder flattening.
+		(function () {
+			var LEGACY = 'assets/laxapellets_se/';
+			function rewriteAttr(el, attr) {
+				var v = el.getAttribute(attr);
+				if (!v || v.indexOf(LEGACY) === -1) return;
+				el.setAttribute(attr, v.split(LEGACY).join(''));
+			}
+			function rewriteSrcset(el) {
+				var v = el.getAttribute('srcset');
+				if (!v || v.indexOf(LEGACY) === -1) return;
+				var parts = v.split(',').map(function (p) {
+					var seg = p.trim().split(/\s+/);
+					seg[0] = seg[0].split(LEGACY).join('');
+					return seg.join(' ');
+				});
+				el.setAttribute('srcset', parts.join(', '));
+			}
+			function run() {
+				var nodes = document.querySelectorAll('[href], [src], [srcset]');
+				for (var i = 0; i < nodes.length; i++) {
+					rewriteAttr(nodes[i], 'href');
+					rewriteAttr(nodes[i], 'src');
+					rewriteSrcset(nodes[i]);
+				}
+			}
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', run);
+			} else {
+				run();
+			}
+		})();
+	</script>
 	<meta charset="utf-8">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, shrink-to-fit=no">
@@ -462,12 +497,12 @@ var wpm = {"ajax_url":"https://laxapellets.se/wp-admin/admin-ajax.php","root":"h
 	</div>
 
 </a>
-<a class="product shadow rounded" href="assets/laxapellets_se/produkt/laxa-finspan.html" data-unittype="/pall">
+<a class="product shadow rounded" href="produkt/laxa-finspan.html" data-unittype="/pall">
 
 	<figure class="product__image">
 				
-		<img decoding="async" width="414" height="414" src="assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-414x414.webp" class="attachment-product_small size-product_small wp-post-image" alt="" srcset="assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-414x414.webp 414w, assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-250x250.webp 250w, assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-700x700.webp 700w, assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-150x150.webp 150w, assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-768x768.webp 768w, assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-120x120.webp 120w, assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-400x400.webp 400w, assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-300x300.webp 300w, assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-600x600.webp 600w, assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-100x100.webp 100w, assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal.webp 836w" sizes="(max-width: 414px) 100vw, 414px">
-		<img src="assets/laxapellets_se/wp-content/uploads/2025/01/Laxa-Finspan-Laxa-Pellets-narbild-414x414.webp" alt="" class="product__image__close-up">	</figure>
+		<img decoding="async" width="414" height="414" src="wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-414x414.webp" class="attachment-product_small size-product_small wp-post-image" alt="" srcset="wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-414x414.webp 414w, wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-250x250.webp 250w, wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-700x700.webp 700w, wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-150x150.webp 150w, wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-768x768.webp 768w, wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-120x120.webp 120w, wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-400x400.webp 400w, wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-300x300.webp 300w, wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-600x600.webp 600w, wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal-100x100.webp 100w, wp-content/uploads/2025/01/Laxa-finspan-Laxa-pellets-bal.webp 836w" sizes="(max-width: 414px) 100vw, 414px">
+		<img src="wp-content/uploads/2025/01/Laxa-Finspan-Laxa-Pellets-narbild-414x414.webp" alt="" class="product__image__close-up">	</figure>
 	
 	<div class="product__info">
 
