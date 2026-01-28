@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { X, Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { X } from 'lucide-react';
 import { products, Product, formatPrice } from '@/data/products';
 
 interface LeadModalProps {
@@ -14,13 +15,13 @@ interface ProductSelection {
 }
 
 export function LeadModal({ isOpen, onClose, preselectedProduct }: LeadModalProps) {
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [selections, setSelections] = useState<ProductSelection[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Reset form when modal opens
@@ -34,7 +35,6 @@ export function LeadModal({ isOpen, onClose, preselectedProduct }: LeadModalProp
         ? [{ productId: preselectedProduct.id, quantity: 1 }]
         : []
       );
-      setIsSuccess(false);
       setErrors({});
     }
   }, [isOpen, preselectedProduct]);
@@ -115,22 +115,16 @@ export function LeadModal({ isOpen, onClose, preselectedProduct }: LeadModalProp
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
+      
+      // Close modal and redirect to thank you page
+      onClose();
+      navigate('/tack');
     } catch (error) {
       console.error('Error sending lead:', error);
+      setIsSubmitting(false);
     }
-
-    setIsSubmitting(false);
-    setIsSuccess(true);
   };
 
-  const handleNewOrder = () => {
-    setIsSuccess(false);
-    setFirstName('');
-    setLastName('');
-    setPhone('');
-    setMessage('');
-    setSelections([]);
-  };
 
   if (!isOpen) return null;
 
@@ -149,34 +143,14 @@ export function LeadModal({ isOpen, onClose, preselectedProduct }: LeadModalProp
           <X className="w-6 h-6" />
         </button>
 
-        {isSuccess ? (
-          /* Success State */
-          <div className="p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
-              <Check className="w-8 h-8 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Tack för din förfrågan!</h3>
-            <p className="text-muted-foreground mb-6">
-              Vi återkommer till dig så snart som möjligt med en offert.
+        {/* Form */}
+        <div className="p-6">
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-foreground">Skicka köpförfrågan</h2>
+            <p className="text-muted-foreground mt-1">
+              Fyll i formuläret så kontaktar vi dig med en offert.
             </p>
-            <div className="flex gap-3 justify-center">
-              <button onClick={handleNewOrder} className="btn-outline">
-                Ny beställning
-              </button>
-              <button onClick={onClose} className="btn-primary">
-                Stäng
-              </button>
-            </div>
           </div>
-        ) : (
-          /* Form */
-          <div className="p-6">
-            <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-foreground">Skicka köpförfrågan</h2>
-              <p className="text-muted-foreground mt-1">
-                Fyll i formuläret så kontaktar vi dig med en offert.
-              </p>
-            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Name Fields */}
@@ -314,9 +288,8 @@ export function LeadModal({ isOpen, onClose, preselectedProduct }: LeadModalProp
               >
                 {isSubmitting ? 'Skickar...' : 'Skicka förfrågan'}
               </button>
-            </form>
-          </div>
-        )}
+          </form>
+        </div>
       </div>
     </div>
   );
